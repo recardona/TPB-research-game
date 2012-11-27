@@ -4,21 +4,26 @@
  *
  */
 function PlayState() {
-  var player
-  var bullets = new jaws.SpriteList()
+  var player;
+  var bullets = new jaws.SpriteList();
 
   this.setup = function() {
-    player = new jaws.Sprite({image: "./assets/art/plane.png", x: 10, y:100})
-    player.can_fire = true
+  	var player_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_spritesheet.png", frame_size:[128,128],frame_duration:100});
+    player = new jaws.Sprite({x: 10, y:100})
+    player.can_fire = true;
+    player.anim_default = player_anim.slice(0,1);
+    player.anim_walk = player_anim.slice(1,8);
+    player.setImage(player.anim_default.next());
+    
     jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
   }
 
   this.update = function() {
-    if(jaws.pressed("left"))  { player.x -= 2 }
-    if(jaws.pressed("right")) { player.x += 2 }
-    if(jaws.pressed("up"))    { player.y -= 2 }
-    if(jaws.pressed("down"))  { player.y += 2 }
+    if(jaws.pressed("left"))  { player.x -= 2; player.setImage(player.anim_walk.next()); }
+    if(jaws.pressed("right")) { player.x += 2; player.setImage(player.anim_walk.next()); }
+    if(jaws.pressed("up"))    { player.y -= 2; player.setImage(player.anim_walk.next()); }
+    if(jaws.pressed("down"))  { player.y += 2; player.setImage(player.anim_walk.next()); }
     if(jaws.pressed("space")) { 
       if(player.can_fire) {
         bullets.push( new Bullet(player.rect().right, player.y) )
