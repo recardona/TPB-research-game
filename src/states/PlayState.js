@@ -19,7 +19,7 @@ function PlayState() {
   	var player_horiz_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_LR_spritesheet.png", frame_size:[57.571,84], loop:true});
   	var player_vert_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_UD_spritesheet.png", frame_size:[74.714,54], loop:true});
    	
-    player = new jaws.Sprite({x: 10, y:100, anchor:"center"});
+    player = new jaws.Sprite({x: 10, y:100, anchor:"center", scale: 0.75});
     player.can_fire = true;
     player.anim_walk_left  = player_horiz_anim.slice(0,7);
     player.anim_walk_right = player_horiz_anim.slice(7,14);
