@@ -6,33 +6,50 @@
 function PlayState() {
   var player;
   var bullets = new jaws.SpriteList();
+  var background;
 
   this.setup = function() {
-  	var player_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_spritesheet.png", frame_size:[128,128],frame_duration:100});
-  	
   	var player_horiz_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_LR_spritesheet.png", frame_size:[57.571,84], loop:true});
   	var player_vert_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_UD_spritesheet.png", frame_size:[74.714,54], loop:true});
    	
-    player = new jaws.Sprite({x: 10, y:100})
+    player = new jaws.Sprite({x: 10, y:100, anchor:"center"});
     player.can_fire = true;
     player.anim_walk_left  = player_horiz_anim.slice(0,7);
     player.anim_walk_right = player_horiz_anim.slice(7,14);
     player.anim_walk_down  = player_vert_anim.slice(0,7);
     player.anim_walk_up    = player_vert_anim.slice(7,14);
     
-    player.anim_default = player_anim.slice(0,1);
-    player.anim_walk = player_anim.slice(1,8);
-    player.setImage(player.anim_default.next());
+    player.setImage(player.anim_walk_right.next());
     
     jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
   }
 
   this.update = function() {
-    if(jaws.pressed("left"))  { player.x -= 3; player.setImage(player.anim_walk_left.next()); }
-    if(jaws.pressed("right")) { player.x += 3; player.setImage(player.anim_walk_right.next()); }
-    if(jaws.pressed("up"))    { player.y -= 3; player.setImage(player.anim_walk_up.next()); }
-    if(jaws.pressed("down"))  { player.y += 3; player.setImage(player.anim_walk_down.next()); }
+    if(jaws.pressed("left"))  
+    {
+    	player.x -= 3; 
+    	player.setImage(player.anim_walk_left.next());  
+    }
+    
+    else if(jaws.pressed("right")) 
+    { 
+    	player.x += 3; 
+    	player.setImage(player.anim_walk_right.next()); 
+    }
+    
+    if(jaws.pressed("up"))    
+    { 
+    	player.y -= 3;
+    	player.setImage(player.anim_walk_up.next()); 
+    }
+    
+    else if(jaws.pressed("down"))  
+    { 
+    	player.y += 3; 
+    	player.setImage(player.anim_walk_down.next());
+    }
+    
     if(jaws.pressed("space")) { 
       if(player.can_fire) {
         bullets.push( new Bullet(player.rect().right, player.y) )
