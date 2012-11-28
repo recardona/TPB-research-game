@@ -9,6 +9,12 @@ function PlayState() {
   var background;
 
   this.setup = function() {
+  	
+  	/* Background setup. */
+  	background = new jaws.Sprite({image:"./assets/art/background_1024.png", anchor:"top_left", x:0, y:0});
+  	
+  	
+  	/* Player setup. */
   	var player_horiz_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_LR_spritesheet.png", frame_size:[57.571,84], loop:true});
   	var player_vert_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_UD_spritesheet.png", frame_size:[74.714,54], loop:true});
    	
@@ -18,8 +24,11 @@ function PlayState() {
     player.anim_walk_right = player_horiz_anim.slice(7,14);
     player.anim_walk_down  = player_vert_anim.slice(0,7);
     player.anim_walk_up    = player_vert_anim.slice(7,14);
-    
     player.setImage(player.anim_walk_right.next());
+    
+    
+    
+    
     
     jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
@@ -64,9 +73,10 @@ function PlayState() {
   }
 
   this.draw = function() {
-    jaws.context.clearRect(0,0,jaws.width,jaws.height)
-    player.draw()
-    bullets.draw()  // will call draw() on all items in the list
+    jaws.context.clearRect(0,0,jaws.width,jaws.height);
+    background.draw();
+    player.draw();
+    bullets.draw();  // will call draw() on all items in the list
   }
 
   /* Simular to example1 but now we're using jaws properties to get width and height of canvas instead */
