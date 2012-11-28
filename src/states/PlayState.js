@@ -107,24 +107,6 @@ function PlayState() {
       jaws.context.drawImage(jaws.assets.get("./assets/art/bullet.png"), this.x, this.y);
     }
   }
-  
-  function Lantern(x,y)
-  {
-  	this.ring    = new jaws.Sprite({image: "./assets/art/safety_ring.png", anchor:"center", x:x, y:y});
-  	this.lantern = new jaws.Sprite({image: "./assets/art/lantern.png", anchor:"center", x:x, y:y});
-  	
-  	// background = new jaws.Sprite({image:"./assets/art/background_1024.png", anchor:"top_left", x:0, y:0});
-  	this.update = function()
-  	{
-  		this.ring.rotate(1); //degrees
-  	}
-  	
-  	this.draw = function()
-  	{
-  		this.lantern.draw();
-  		this.ring.draw();
-  	}
-  }
 }
 
 
