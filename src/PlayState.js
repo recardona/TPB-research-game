@@ -6,6 +6,7 @@
 function PlayState() {
   var player;
   var bullets = new jaws.SpriteList();
+  var lanterns = new jaws.SpriteList();
   var background;
 
   this.setup = function() {
@@ -27,14 +28,17 @@ function PlayState() {
     player.setImage(player.anim_walk_right.next());
     
     
-    
-    
-    
-    jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
+    /* Lantern setup. */
+	lanterns.push( new Lantern(jaws.width/4, jaws.height/2) );
+	lanterns.push( new Lantern(2*jaws.width/4, jaws.height/2) );
+	lanterns.push( new Lantern(3*jaws.width/4, jaws.height/2) );
+   
+	jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
   }
 
   this.update = function() {
+  	lanterns.update();
     if(jaws.pressed("left"))  
     {
     	player.x -= 3; 
@@ -75,6 +79,7 @@ function PlayState() {
   this.draw = function() {
     jaws.context.clearRect(0,0,jaws.width,jaws.height);
     background.draw();
+    lanterns.draw();
     player.draw();
     bullets.draw();  // will call draw() on all items in the list
   }
@@ -91,12 +96,56 @@ function PlayState() {
     if(item.y + item.height  > jaws.height)  { item.y = jaws.height - item.height }
   }
 
-  function Bullet(x, y) {
-    this.x = x
-    this.y = y
-    this.draw = function() {
-      this.x += 4
-      jaws.context.drawImage(jaws.assets.get("./assets/art/bullet.png"), this.x, this.y)
+  function Bullet(x, y) 
+  {
+    this.x = x;
+    this.y = y;
+    
+    this.draw = function() 
+    {
+      this.x += 4;
+      jaws.context.drawImage(jaws.assets.get("./assets/art/bullet.png"), this.x, this.y);
     }
   }
+  
+  function Lantern(x,y)
+  {
+  	this.ring    = new jaws.Sprite({image: "./assets/art/safety_ring.png", anchor:"center", x:x, y:y});
+  	this.lantern = new jaws.Sprite({image: "./assets/art/lantern.png", anchor:"center", x:x, y:y});
+  	
+  	// background = new jaws.Sprite({image:"./assets/art/background_1024.png", anchor:"top_left", x:0, y:0});
+  	this.update = function()
+  	{
+  		this.ring.rotate(1); //degrees
+  	}
+  	
+  	this.draw = function()
+  	{
+  		this.lantern.draw();
+  		this.ring.draw();
+  	}
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
