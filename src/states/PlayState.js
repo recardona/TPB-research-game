@@ -5,14 +5,40 @@
  */
 function PlayState() {
   var player;
-  var bullets = new jaws.SpriteList();
-  var lanterns = new jaws.SpriteList();
-  var background;
+  var grass_blocks;
+  var bullets  = new jaws.SpriteList();
+  var lanterns = new jaws.SpriteList();;
+  var width  = 72;
+  var height = 54;
+  var game_width_pixels  = width*32;
+  var game_height_pixels = height*32;
+  var viewport;
+  var tile_map;
+  // var background;
+  
 
   this.setup = function() {
   	
   	/* Background setup. */
-  	background = new jaws.Sprite({image:"./assets/art/background_1024.png", anchor:"top_left", x:0, y:0});
+  	
+  	grass_blocks = new jaws.SpriteList();
+  	for(var xIndex = 0; xIndex < width; xIndex++) {
+  	    for(var yIndex = 0; yIndex < height; yIndex++) {
+  	        grass_blocks.push( new jaws.Sprite({image: "./assets/art/grass.png", x: xIndex*32, y: yIndex*32}) );
+  	    }
+  	}
+  	
+  	//the viewport is all the viewable area of a larger tilemap.  It allows scrolling.
+  	viewport  = new jaws.Viewport({max_x:width*32, max_y:height*32});
+  	
+  	//the tile map is the actual area that *can* be displayed:  32 px X 96 blocks 
+  	tile_map  = new jaws.TileMap({size: [width, height], cell_size: [32,32]});
+  	
+  	//Fit all items in array blocks into correct cells in the tilemap
+  	//Later on we can look them up really fast
+  	tile_map.push(grass_blocks);
+  	
+  	
   	
   	
   	/* Player setup. */
@@ -29,26 +55,28 @@ function PlayState() {
     
     
     /* Lantern setup. */
-	lanterns.push( new Lantern(jaws.width/4, jaws.height/2) );
-	lanterns.push( new Lantern(2*jaws.width/4, jaws.height/2) );
-	lanterns.push( new Lantern(3*jaws.width/4, jaws.height/2) );
+	lanterns.push( new Lantern(jaws.width*3/4, jaws.height*3/2) );
+	lanterns.push( new Lantern(2*jaws.width*3/4, jaws.height*3/2) );
+	lanterns.push( new Lantern(3*jaws.width*3/4, jaws.height*3/2) );
+	tile_map.push(lanterns);
    
 	jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
   }
+
 
   this.update = function() {
   	lanterns.update();
     if(jaws.pressed("left"))  
     {
     	player.x -= 3; 
-    	player.setImage(player.anim_walk_left.next());  
+    	player.setImage(player.anim_walk_left.next());
     }
     
     else if(jaws.pressed("right")) 
     { 
     	player.x += 3; 
-    	player.setImage(player.anim_walk_right.next()); 
+    	player.setImage(player.anim_walk_right.next());
     }
     
     if(jaws.pressed("up"))    
@@ -63,6 +91,7 @@ function PlayState() {
     	player.setImage(player.anim_walk_down.next());
     }
     
+    
     if(jaws.pressed("space")) { 
       if(player.can_fire) {
         bullets.push( new Bullet(player.rect().right, player.y) )
@@ -71,30 +100,47 @@ function PlayState() {
       }
     }
 
+    viewport.centerAround(player);
     forceInsideCanvas(player)
     bullets.removeIf(isOutsideCanvas) // delete items for which isOutsideCanvas(item) is true
     fps.innerHTML = jaws.game_loop.fps
   }
 
+
   this.draw = function() {
-    jaws.context.clearRect(0,0,jaws.width,jaws.height);
-    background.draw();
-    lanterns.draw();
-    player.draw();
-    bullets.draw();  // will call draw() on all items in the list
+    // jaws.context.clearRect(0,0,jaws.width,jaws.height);
+    // background.draw();
+    jaws.clear();
+    viewport.drawTileMap(tile_map);
+    viewport.draw(player);
+    
+    viewport.apply(function() {
+        player.draw();
+        lanterns.draw();
+        });
+    
+    // viewport.draw(lanterns);
+    // lanterns.draw();
+    // player.draw();
+    // bullets.draw();  // will call draw() on all items in the list
+    
   }
+
 
   /* Simular to example1 but now we're using jaws properties to get width and height of canvas instead */
   /* This mainly since we let jaws handle the canvas now */
   function isOutsideCanvas(item) { 
-    return (item.x < 0 || item.y < 0 || item.x > jaws.width || item.y > jaws.height) 
+    return (item.x < 0 || item.y < 0 || item.x > game_width_pixels || item.y > game_height_pixels); 
   }
+  
+  
   function forceInsideCanvas(item) {
-    if(item.x < 0)                  { item.x = 0  }
-    if(item.x + item.width > jaws.width)     { item.x = jaws.width - item.width }
-    if(item.y < 0)                  { item.y = 0 }
-    if(item.y + item.height  > jaws.height)  { item.y = jaws.height - item.height }
+    if(item.x - item.width < 0)                     { item.x = 0 + item.width;  }
+    if(item.x + item.width > game_width_pixels)     { item.x = game_width_pixels - item.width; }
+    if(item.y - item.height < 0)                    { item.y = 0 + item.height; }
+    if(item.y + item.height  > game_height_pixels)  { item.y = game_height_pixels - item.height; }
   }
+
 
   function Bullet(x, y) 
   {
