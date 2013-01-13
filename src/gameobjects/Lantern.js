@@ -7,6 +7,8 @@
  */
 function Lantern(x,y) {
   	
+  	this.x = x;
+  	this.y = y;
   	this.ring    = new jaws.Sprite({image: "./assets/art/safety_ring.png", anchor:"center", x:x, y:y});
   	this.lantern = new jaws.Sprite({image: "./assets/art/lantern.png", anchor:"center", x:x, y:y});
   	
