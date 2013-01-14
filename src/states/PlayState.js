@@ -48,6 +48,9 @@ function PlayState() {
   	var player_vert_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_UD_spritesheet.png", frame_size:[74.714,54], loop:true});
    	
     player = new jaws.Sprite({x: 10, y:100, anchor:"center", scale: 0.75});
+    player.radius = 20; //px - this radius is made available for circle-based collision
+    player.life = 100;
+    player.disease_penalty = 0.1;
     player.can_fire = true;
     player.anim_walk_left  = player_horiz_anim.slice(0,7);
     player.anim_walk_right = player_horiz_anim.slice(7,14);
@@ -65,7 +68,7 @@ function PlayState() {
 	lanterns.push( new Lantern(jaws.width*3/4, jaws.height*3/2) );
 	lanterns.push( new Lantern(2*jaws.width*3/4, jaws.height*3/2) );
 	lanterns.push( new Lantern(3*jaws.width*3/4, jaws.height*3/2) );
-	tile_map.push(lanterns);
+	// tile_map.push(lanterns);
    
 	jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
@@ -74,6 +77,7 @@ function PlayState() {
 
   this.update = function() {
   	lanterns.update();
+    
     if(jaws.pressed("left"))  
     {
     	player.x -= 3; 
@@ -98,17 +102,51 @@ function PlayState() {
     	player.setImage(player.anim_walk_down.next());
     }
     
-    
     if(jaws.pressed("space")) { 
       if(player.can_fire) {
         bullets.push( new Bullet(player.rect().right, player.y) )
         player.can_fire = false
         setTimeout(function() { player.can_fire = true }, 100)
       }
-      
-      player_face.setImage(face_anim.next());
     }
-
+    
+    //check collisions against all lanterns
+    if(jaws.collideOneWithMany(player,lanterns).length > 0) {
+        player.disease_penalty = 0.01; //while inside, the disease acts slower!
+    }
+    
+    else {
+        player.disease_penalty = 0.1; //if not, the disease resumes its course X_X
+    }
+        
+    player.life -= player.disease_penalty;
+    
+    //check the player's life, and change the player's face accordingly
+    if(player.life > 80) {
+        player_face.setImage(face_anim.frames[0]);
+    }
+    
+    else if(player.life > 60) {
+        player_face.setImage(face_anim.frames[1]);
+    }
+    
+    else if(player.life > 40) {
+        player_face.setImage(face_anim.frames[2]);
+    }
+    
+    else if(player.life > 20) {
+        player_face.setImage(face_anim.frames[3]);
+    }
+    
+    else if(player.life > 0) {
+        player_face.setImage(face_anim.frames[4]);
+    }
+    
+    else if(player.life < 0) {
+        player_face.setImage(face_anim.frames[5]);
+    }
+    
+    
     viewport.centerAround(player);
     forceInsideCanvas(player)
     bullets.removeIf(isOutsideCanvas) // delete items for which isOutsideCanvas(item) is true
@@ -118,8 +156,6 @@ function PlayState() {
 
   this.draw = function() {
     jaws.context.clearRect(0,0,jaws.width,jaws.height);
-    // background.draw();
-    jaws.clear();
     
     viewport.drawTileMap(tile_map);
     viewport.draw(player);
