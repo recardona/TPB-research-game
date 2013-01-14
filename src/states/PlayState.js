@@ -5,6 +5,8 @@
  */
 function PlayState() {
   var player;
+  var player_face;
+  var face_anim;
   var grass_blocks;
   var bullets  = new jaws.SpriteList();
   var lanterns = new jaws.SpriteList();;
@@ -53,6 +55,11 @@ function PlayState() {
     player.anim_walk_up    = player_vert_anim.slice(7,14);
     player.setImage(player.anim_walk_right.next());
     
+    /* Player face setup - HUD */
+   face_anim = new jaws.Animation({sprite_sheet: "./assets/art/status_faces.png", frame_size:[215,215],loop:false});
+   player_face = new jaws.Sprite({x:718, y:50, anchor:"center", scale: 0.5});
+   player_face.setImage(face_anim.next());
+   
     
     /* Lantern setup. */
 	lanterns.push( new Lantern(jaws.width*3/4, jaws.height*3/2) );
@@ -98,6 +105,8 @@ function PlayState() {
         player.can_fire = false
         setTimeout(function() { player.can_fire = true }, 100)
       }
+      
+      player_face.setImage(face_anim.next());
     }
 
     viewport.centerAround(player);
@@ -108,16 +117,18 @@ function PlayState() {
 
 
   this.draw = function() {
-    // jaws.context.clearRect(0,0,jaws.width,jaws.height);
+    jaws.context.clearRect(0,0,jaws.width,jaws.height);
     // background.draw();
     jaws.clear();
+    
     viewport.drawTileMap(tile_map);
     viewport.draw(player);
     
     viewport.apply(function() {
-        player.draw();
         lanterns.draw();
         });
+        
+    player_face.draw();
     
     // viewport.draw(lanterns);
     // lanterns.draw();
