@@ -1,6 +1,7 @@
 /*
  *
- * PlayState is the actual game play. We switch to it once user choses "Start game"
+ * PlayState is the actual game play. 
+ * We switch to it once user choses "Start game"
  *
  */
 function PlayState() {
@@ -9,7 +10,8 @@ function PlayState() {
   var face_anim;
   var grass_blocks;
   var bullets  = new jaws.SpriteList();
-  var lanterns = new jaws.SpriteList();;
+  var lanterns = new jaws.SpriteList();
+  var zombies  = new jaws.SpriteList();
   var width  = 72;
   var height = 54;
   var game_width_pixels  = width*32;
@@ -69,7 +71,14 @@ function PlayState() {
 	lanterns.push( new Lantern(2*jaws.width*3/4, jaws.height*3/2) );
 	lanterns.push( new Lantern(3*jaws.width*3/4, jaws.height*3/2) );
 	// tile_map.push(lanterns);
-   
+	
+	/* Zombie setup. */
+	zombies.push( new Zombie(100,100) );
+	zombies.push( new Zombie(100,200) );
+	zombies.push( new Zombie(100,300) );
+	zombies.push( new Zombie(100,400) );
+	zombies.push( new Zombie(100,500) );
+	
 	jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
   }
@@ -77,6 +86,9 @@ function PlayState() {
 
   this.update = function() {
   	lanterns.update();
+  	zombies.forEach(function(zombie, index, zombies) {
+  	    seek(zombie,{x:player.x, y:player.y});
+    });
     
     if(jaws.pressed("left"))  
     {
@@ -122,6 +134,42 @@ function PlayState() {
     player.life -= player.disease_penalty;
     
     //check the player's life, and change the player's face accordingly
+    updatePlayerLifeIndicator(player, player_face);
+    
+    
+    viewport.centerAround(player);
+    forceInsideCanvas(player)
+    bullets.removeIf(isOutsideCanvas) // delete items for which isOutsideCanvas(item) is true
+    
+    fps.innerHTML = jaws.game_loop.fps
+  }
+
+
+  this.draw = function() {
+    jaws.context.clearRect(0,0,jaws.width,jaws.height);
+    
+    viewport.drawTileMap(tile_map);
+    viewport.draw(player);
+    
+    viewport.apply(function() {
+        lanterns.draw();
+        zombies.draw();
+        });
+        
+    player_face.draw();
+    
+    // viewport.draw(lanterns);
+    // lanterns.draw();
+    // player.draw();
+    // bullets.draw();  // will call draw() on all items in the list
+    
+  }
+  
+  /* 
+   * Auxiliary player functions
+   */
+  function updatePlayerLifeIndicator(player, player_face) {
+      //check the player's life, and change the player's face accordingly
     if(player.life > 80) {
         player_face.setImage(face_anim.frames[0]);
     }
@@ -145,42 +193,17 @@ function PlayState() {
     else if(player.life < 0) {
         player_face.setImage(face_anim.frames[5]);
     }
-    
-    
-    viewport.centerAround(player);
-    forceInsideCanvas(player)
-    bullets.removeIf(isOutsideCanvas) // delete items for which isOutsideCanvas(item) is true
-    fps.innerHTML = jaws.game_loop.fps
   }
 
 
-  this.draw = function() {
-    jaws.context.clearRect(0,0,jaws.width,jaws.height);
-    
-    viewport.drawTileMap(tile_map);
-    viewport.draw(player);
-    
-    viewport.apply(function() {
-        lanterns.draw();
-        });
-        
-    player_face.draw();
-    
-    // viewport.draw(lanterns);
-    // lanterns.draw();
-    // player.draw();
-    // bullets.draw();  // will call draw() on all items in the list
-    
-  }
-
+   
 
   /* Simular to example1 but now we're using jaws properties to get width and height of canvas instead */
   /* This mainly since we let jaws handle the canvas now */
   function isOutsideCanvas(item) { 
     return (item.x < 0 || item.y < 0 || item.x > game_width_pixels || item.y > game_height_pixels); 
   }
-  
-  
+    
   function forceInsideCanvas(item) {
     if(item.x - item.width < 0)                     { item.x = 0 + item.width;  }
     if(item.x + item.width > game_width_pixels)     { item.x = game_width_pixels - item.width; }
