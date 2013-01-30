@@ -26,7 +26,6 @@ function Zombie(x,y) {
     this.velocity = {x:0, y:0};
     this.lastVelocity = {x:0, y:0};
     this.lastAcceleration = {x:0, y:0};
-    this.rect = this.sprite.rect();
     
     this.updateVelocity = function(acceleration,dt) {
         
@@ -77,34 +76,11 @@ function Zombie(x,y) {
     }
     
     
-    /**
-     * Returns a number representing the quadrant a coordinate is in, given
-     * its x and y coordinates.
-     * @param {Number} x_coordinate
-     * @param {Number} y_coordinate
-     */  
-    function quadrant(x_coordinate, y_coordinate) {
-        
-        if(x_coordinate > 0 && y_coordinate > 0) {
-            return 1;
-        }
-        
-        else if(x_coordinate < 0 && y_coordinate > 0) {
-            return 2;
-        }
-        
-        else if(x_coordinate < 0 && y_coordinate < 0) {
-            return 3;
-        }
-        
-        else {
-            return 4;
-        }
-        
-    }
-    
     this.draw = function() {
         this.sprite.draw();
     }
     
+    this.rect = function() {
+        return this.sprite.rect();
+    }
 }
