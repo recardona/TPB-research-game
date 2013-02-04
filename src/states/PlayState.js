@@ -24,7 +24,6 @@ function PlayState() {
   this.setup = function() {
   	
   	/* Background setup. */
-  	
   	grass_blocks = new jaws.SpriteList();
   	for(var xIndex = 0; xIndex < width; xIndex++) {
   	    for(var yIndex = 0; yIndex < height; yIndex++) {
@@ -48,6 +47,9 @@ function PlayState() {
   	/* Player setup. */
   	var player_horiz_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_LR_spritesheet.png", frame_size:[57.571,84], loop:true});
   	var player_vert_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_UD_spritesheet.png", frame_size:[74.714,54], loop:true});
+   	
+   	// var player_horiz_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_LR_spritesheet.png", frame_size:[56,79], loop:true});
+    // var player_vert_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_UD_spritesheet.png", frame_size:[79,56], loop:true});
    	
     player = new jaws.Sprite({x: 10, y:100, anchor:"center", scale: 0.75});
     player.radius = 20; //px - this radius is made available for circle-based collision
@@ -73,10 +75,10 @@ function PlayState() {
 	// tile_map.push(lanterns);
 	
 	/* Zombie setup. */
-	zombies.push( new Zombie(200,100) );
-	zombies.push( new Zombie(100,300) );
-	zombies.push( new Zombie(100,500) );
-	
+	// zombies.push( new Zombie(200,100) );
+	// zombies.push( new Zombie(100,300) );
+	// zombies.push( new Zombie(100,500) );
+// 	
 	/* Building setup. */
 	buildings.push( new Building({type:4,x:200,y:350}));
 	buildings.push( new Building({type:3,x:550,y:350}));
@@ -96,20 +98,18 @@ function PlayState() {
     
     
     var playerDidCollide = false;
-   
-    //check collisions against all collideable, static objects
-    // if(jaws.collideOneWithMany(player,zombies).length > 0)// ||
-        // // jaws.collideOneWithMany(player,buildings).length > 0) 
-    // {
-      // //playerDidCollide = true;
-    // }
+    
+    /* handle input and check for building collisions */
+    var playerCollidedWithBuilding = false;
     
     if(jaws.pressed("left"))
     {
         player.x -= 3;
         
+        //if the player collided, revert the move
         if(jaws.collideOneWithMany(player,buildings).length > 0) {
             player.x += 3;
+            playerCollidedWithBuilding = true;
         }
             	 
     	player.setImage(player.anim_walk_left.next());
@@ -117,8 +117,12 @@ function PlayState() {
     
     else if(jaws.pressed("right")) 
     { 
-        if(!playerDidCollide) {
-            player.x += 3;    
+        player.x += 3;
+        
+        //if the player collided, revert the move
+        if(jaws.collideOneWithMany(player,buildings).length > 0) {
+            player.x -= 3;    
+            playerCollidedWithBuilding = true;
         }
         
     	player.setImage(player.anim_walk_right.next());
@@ -126,8 +130,12 @@ function PlayState() {
     
     if(jaws.pressed("up"))    
     {
-        if(!playerDidCollide) {
-            player.y -= 3;    
+        player.y -= 3;
+        
+        //if the player collided, revert the move
+        if(jaws.collideOneWithMany(player,buildings).length > 0) {
+            player.y += 3;    
+            playerCollidedWithBuilding = true;
         } 
     	
     	player.setImage(player.anim_walk_up.next()); 
@@ -135,24 +143,23 @@ function PlayState() {
     
     else if(jaws.pressed("down"))  
     { 
-        if(!playerDidCollide) {
-            player.y += 3;    
+        player.y += 3;
+        
+        //if the player collided, revert the move
+        if(jaws.collideOneWithMany(player,buildings).length > 0) {
+            player.y -= 3;
+            playerCollidedWithBuilding = true;    
         }
 
     	player.setImage(player.anim_walk_down.next());
     }
     
-    // if(jaws.pressed("space")) { 
-      // if(player.can_fire) {
-        // bullets.push( new Bullet(player.rect().right, player.y) )
-        // player.can_fire = false
-        // setTimeout(function() { player.can_fire = true }, 100)
-      // }
-    // }
+    /* check collisions against all lanterns */
+    var playerCollidedWithLantern = false;
     
-    //check collisions against all lanterns
     if(jaws.collideOneWithMany(player,lanterns).length > 0) {
         player.disease_penalty = 0.01; //while inside, the disease acts slower!
+        playerCollidedWithLantern = true;
     }
     
     else {
@@ -161,7 +168,10 @@ function PlayState() {
         
     player.life -= player.disease_penalty;
     
-    //check the player's life, and change the player's face accordingly
+    /* set collision flags */
+    playerDidCollide = (playerCollidedWithLantern || playerCollidedWithBuilding);
+    
+    /* check the player's life, and change the player's face accordingly */
     updatePlayerLifeIndicator(player, player_face);
     
     
@@ -170,7 +180,11 @@ function PlayState() {
     // bullets.removeIf(isOutsideCanvas) // delete items for which isOutsideCanvas(item) is true
     
     fps.innerHTML    = jaws.game_loop.fps
+    
+    /* reset flags */
     playerDidCollide = false;
+    playerCollidedWithLantern = false;
+    playerCollidedWithBuilding = false;
   }
 
 
@@ -187,11 +201,6 @@ function PlayState() {
         });
         
     player_face.draw();
-    
-    // viewport.draw(lanterns);
-    // lanterns.draw();
-    // player.draw();
-    // bullets.draw();  // will call draw() on all items in the list
     
   }
   
@@ -241,39 +250,4 @@ function PlayState() {
     if(item.y + item.height  > game_height_pixels)  { item.y = game_height_pixels - item.height; }
   }
 
-
-  function Bullet(x, y) 
-  {
-    this.x = x;
-    this.y = y;
-    
-    this.draw = function() 
-    {
-      this.x += 4;
-      jaws.context.drawImage(jaws.assets.get("./assets/art/bullet.png"), this.x, this.y);
-    }
-  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
