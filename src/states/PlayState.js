@@ -24,12 +24,7 @@ function PlayState() {
   this.setup = function() {
   	
   	/* Background setup. */
-  	grass_blocks = new jaws.SpriteList();
-  	for(var xIndex = 0; xIndex < width; xIndex++) {
-  	    for(var yIndex = 0; yIndex < height; yIndex++) {
-  	        grass_blocks.push( new jaws.Sprite({image: "./assets/art/grass.png", x: xIndex*32, y: yIndex*32}) );
-  	    }
-  	}
+  	grass_blocks = setupBackgroundTiles();
   	
   	//the viewport is all the viewable area of a larger tilemap.  It allows scrolling.
   	viewport  = new jaws.Viewport({max_x:width*32, max_y:height*32});
@@ -214,6 +209,18 @@ function PlayState() {
     else if(player.life < 0) {
         player_face.setImage(face_anim.frames[5]);
     }
+  }
+  
+  function setupBackgroundTiles() {
+    var backgroundTiles = new jaws.SpriteList();
+    
+    for(var xIndex = 0; xIndex < width; xIndex++) {
+        for(var yIndex = 0; yIndex < height; yIndex++) {
+            backgroundTiles.push( new jaws.Sprite({image: "./assets/art/grass.png", x: xIndex*32, y: yIndex*32}) );
+        }
+    }
+    
+    return backgroundTiles;
   }
 
 
