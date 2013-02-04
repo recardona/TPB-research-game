@@ -41,27 +41,9 @@ function PlayState() {
   	//Later on we can look them up really fast
   	tile_map.push(grass_blocks);
   	
-  	
-  	
-  	
   	/* Player setup. */
-  	var player_horiz_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_LR_spritesheet.png", frame_size:[57.571,84], loop:true});
-  	var player_vert_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_UD_spritesheet.png", frame_size:[74.714,54], loop:true});
-   	
-   	// var player_horiz_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_LR_spritesheet.png", frame_size:[56,79], loop:true});
-    // var player_vert_anim = new jaws.Animation({sprite_sheet: "./assets/art/player_UD_spritesheet.png", frame_size:[79,56], loop:true});
-   	
-    player = new jaws.Sprite({x: 10, y:100, anchor:"center", scale: 0.75});
-    player.radius = 20; //px - this radius is made available for circle-based collision
-    player.life = 100;
-    player.disease_penalty = 0.1;
-    player.can_fire = true;
-    player.anim_walk_left  = player_horiz_anim.slice(0,7);
-    player.anim_walk_right = player_horiz_anim.slice(7,14);
-    player.anim_walk_down  = player_vert_anim.slice(0,7);
-    player.anim_walk_up    = player_vert_anim.slice(7,14);
-    player.setImage(player.anim_walk_right.next());
-    
+  	player = new Player(10,100);
+  	
     /* Player face setup - HUD */
    face_anim = new jaws.Animation({sprite_sheet: "./assets/art/status_faces.png", frame_size:[215,215],loop:false});
    player_face = new jaws.Sprite({x:718, y:50, anchor:"center", scale: 0.5});
@@ -104,54 +86,54 @@ function PlayState() {
     
     if(jaws.pressed("left"))
     {
-        player.x -= 3;
+        player.sprite.x -= 3;
         
         //if the player collided, revert the move
         if(jaws.collideOneWithMany(player,buildings).length > 0) {
-            player.x += 3;
+            player.sprite.x += 3;
             playerCollidedWithBuilding = true;
         }
             	 
-    	player.setImage(player.anim_walk_left.next());
+    	player.sprite.setImage(player.anim_walk_left.next());
     }
     
     else if(jaws.pressed("right")) 
     { 
-        player.x += 3;
+        player.sprite.x += 3;
         
         //if the player collided, revert the move
         if(jaws.collideOneWithMany(player,buildings).length > 0) {
-            player.x -= 3;    
+            player.sprite.x -= 3;    
             playerCollidedWithBuilding = true;
         }
         
-    	player.setImage(player.anim_walk_right.next());
+    	player.sprite.setImage(player.anim_walk_right.next());
     }
     
     if(jaws.pressed("up"))    
     {
-        player.y -= 3;
+        player.sprite.y -= 3;
         
         //if the player collided, revert the move
         if(jaws.collideOneWithMany(player,buildings).length > 0) {
-            player.y += 3;    
+            player.sprite.y += 3;    
             playerCollidedWithBuilding = true;
         } 
     	
-    	player.setImage(player.anim_walk_up.next()); 
+    	player.sprite.setImage(player.anim_walk_up.next()); 
     }
     
     else if(jaws.pressed("down"))  
     { 
-        player.y += 3;
+        player.sprite.y += 3;
         
         //if the player collided, revert the move
         if(jaws.collideOneWithMany(player,buildings).length > 0) {
-            player.y -= 3;
+            player.sprite.y -= 3;
             playerCollidedWithBuilding = true;    
         }
 
-    	player.setImage(player.anim_walk_down.next());
+    	player.sprite.setImage(player.anim_walk_down.next());
     }
     
     /* check collisions against all lanterns */
@@ -175,8 +157,8 @@ function PlayState() {
     updatePlayerLifeIndicator(player, player_face);
     
     
-    viewport.centerAround(player);
-    forceInsideCanvas(player)
+    viewport.centerAround(player.sprite);
+    forceInsideCanvas(player.sprite)
     // bullets.removeIf(isOutsideCanvas) // delete items for which isOutsideCanvas(item) is true
     
     fps.innerHTML    = jaws.game_loop.fps
@@ -192,9 +174,9 @@ function PlayState() {
     jaws.context.clearRect(0,0,jaws.width,jaws.height);
     
     viewport.drawTileMap(tile_map);
-    viewport.draw(player);
     
     viewport.apply(function() {
+        player.draw();
         lanterns.draw();
         zombies.draw();
         buildings.draw();
