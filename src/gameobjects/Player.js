@@ -15,8 +15,9 @@ function Player(x,y) {
     this.facingHorizontally = true;
     
     //Game logic attributes
-    this.life   = 100;
-    this.disease_penalty = 0.1;
+    this.life = 100;
+    this.medicineLife   = 0.0;
+    this.diseasePenalty = 0.1;
     
     
     this.draw = function() {

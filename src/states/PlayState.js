@@ -13,6 +13,7 @@ function PlayState() {
   var zombies    = new jaws.SpriteList();
   var buildings  = new jaws.SpriteList();
   var boundaries = new jaws.SpriteList();
+  var medpacs    = new jaws.SpriteList();
   var width  = 72;
   var height = 54;
   var game_width_pixels  = width*32;
@@ -56,13 +57,18 @@ function PlayState() {
 	// zombies.push( new Zombie(200,100) );
 	// zombies.push( new Zombie(100,300) );
 	// zombies.push( new Zombie(100,500) );
-// 	
+	
+	
 	/* Building setup. */
-	// buildings.push( new Building({type:4,x:200,y:350}));
 	buildings.push( new Building({type:3,x:550,y:350}));
 	buildings.push( new Building({type:2,x:330,y:680}));
 	
-	/* Boundaries setup. */
+	/* Test Medpac setup*/
+	medpacs.push( new Medpac(1000,350) );
+	medpacs.push( new Medpac(500,680) );
+	
+	
+	/* ------------------- Boundaries setup. ------------------- */
 	var offset = 35;
 	var leftWall = new Building({type:6,x:offset,y:(game_height_pixels/2)});
 	leftWall.sprite.setWidth(game_height_pixels);
@@ -83,6 +89,9 @@ function PlayState() {
 	boundaries.push(rightWall);
 	boundaries.push(topWall);
 	boundaries.push(bottomWall);
+	/* ========================================================= */
+	
+	
 	
 	jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
@@ -90,7 +99,9 @@ function PlayState() {
 
 
   this.update = function() {
-    console.log("Position: (" + player.sprite.x + ", " + player.sprite.y +")");  
+    // console.log("Position: (" + player.sprite.x + ", " + player.sprite.y +")");
+    console.log("Player life: " + player.life);
+    console.log("Player medicine life: " + player.medicineLife);  
     
       
   	lanterns.update();
@@ -102,7 +113,8 @@ function PlayState() {
     
     var playerDidCollide = false;
     
-    /* handle input and check for building collisions */
+    
+    /* ---- handle input and check for building collisions ----- */
     var playerCollidedWithBuilding = false;
     
     if(jaws.pressed("left"))
@@ -160,23 +172,69 @@ function PlayState() {
 
     	player.sprite.setImage(player.anim_walk_down.next());
     }
+    /* ========================================================= */
     
-    /* check collisions against all lanterns */
+    
+    
+    /* --------- check collisions against all lanterns --------- */
     var playerCollidedWithLantern = false;
     
     if(jaws.collideOneWithMany(player,lanterns).length > 0) {
-        player.disease_penalty = 0.01; //while inside, the disease acts slower!
+        player.diseasePenalty = 0.001; //while inside, the disease acts slower...
         playerCollidedWithLantern = true;
+        
+        if(player.medicineLife > 75) {
+            //...unless you have too much medicine, in which case it acts faster!
+            player.diseasePenalty = 0.1; // X_X
+        }
     }
     
     else {
-        player.disease_penalty = 0.1; //if not, the disease resumes its course X_X
+        player.diseasePenalty = 0.01; //if not, the disease resumes its course >_<
     }
-        
-    player.life -= player.disease_penalty;
+    /* ========================================================= */
+   
+   
+   
+    
+    
+    
+    /* --------- check collisions against all medpacs --------- */
+    var playerCollidedWithMedpac = false;
+    var collided_medpacs = jaws.collideOneWithMany(player,medpacs);
+    
+    if(collided_medpacs.length > 0) {
+        collided_medpacs.forEach(function(medpac) {
+            medpacs.remove(medpac);
+            player.medicineLife += 10;
+        });
+    }
+       
+    /* ========================================================= */
+    
+    
     
     /* set collision flags */
     playerDidCollide = (playerCollidedWithLantern || playerCollidedWithBuilding);
+    
+    
+    
+    /* ------------- do player damage calculations ------------- */
+    if(player.medicineLife > 75 && playerCollidedWithLantern) {
+       //TODO QUESTION:  How do I penalize players with too much medicine?
+       player.life -= player.diseasePenalty;
+    }
+   
+    else if(player.medicineLife > 0) {
+       player.medicineLife -= player.diseasePenalty;
+    }
+   
+    else {
+       player.life -= player.diseasePenalty;
+    }
+   /* ========================================================= */
+  
+  
     
     /* check the player's life, and change the player's face accordingly */
     updatePlayerLifeIndicator(player, player_face);
@@ -204,6 +262,7 @@ function PlayState() {
         lanterns.draw();
         zombies.draw();
         buildings.draw();
+        medpacs.draw();
         player.draw();
         boundaries.draw();
         });
