@@ -82,6 +82,7 @@ function PlayState() {
     if(jaws.pressed("left"))
     {
         player.sprite.x -= 3;
+        player.facingHorizontally = true;
         
         //if the player collided, revert the move
         if(jaws.collideOneWithMany(player,buildings).length > 0) {
@@ -95,6 +96,7 @@ function PlayState() {
     else if(jaws.pressed("right")) 
     { 
         player.sprite.x += 3;
+        player.facingHorizontally = true;
         
         //if the player collided, revert the move
         if(jaws.collideOneWithMany(player,buildings).length > 0) {
@@ -108,6 +110,7 @@ function PlayState() {
     if(jaws.pressed("up"))    
     {
         player.sprite.y -= 3;
+        player.facingHorizontally = false;
         
         //if the player collided, revert the move
         if(jaws.collideOneWithMany(player,buildings).length > 0) {
@@ -121,6 +124,7 @@ function PlayState() {
     else if(jaws.pressed("down"))  
     { 
         player.sprite.y += 3;
+        player.facingHorizontally = false;
         
         //if the player collided, revert the move
         if(jaws.collideOneWithMany(player,buildings).length > 0) {
