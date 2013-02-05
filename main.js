@@ -5,6 +5,8 @@ function init() {
 	jaws.assets.add("./assets/art/bullet.png");
 	jaws.assets.add("./assets/art/grass.png");
 	jaws.assets.add("./assets/art/player_spritesheet.png");
+	jaws.assets.add("./assets/art/player_spritesheet_leftright.png");
+	jaws.assets.add("./assets/art/player_spritesheet_updown.png");
 	jaws.assets.add("./assets/art/player_LR_spritesheet.png");
 	jaws.assets.add("./assets/art/player_LR_spritesheet_zombies.png");
 	jaws.assets.add("./assets/art/player_UD_spritesheet.png");

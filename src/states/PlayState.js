@@ -181,6 +181,7 @@ function PlayState() {
     
   }
   
+  
   /* 
    * Auxiliary player functions
    */
@@ -211,6 +212,7 @@ function PlayState() {
     }
   }
   
+  
   function setupBackgroundTiles() {
     var backgroundTiles = new jaws.SpriteList();
     
@@ -224,13 +226,12 @@ function PlayState() {
   }
 
 
-   
-
   /* Simular to example1 but now we're using jaws properties to get width and height of canvas instead */
   /* This mainly since we let jaws handle the canvas now */
   function isOutsideCanvas(item) { 
     return (item.x < 0 || item.y < 0 || item.x > game_width_pixels || item.y > game_height_pixels); 
   }
+    
     
   function forceInsideCanvas(item) {
     if(item.x - item.width < 0)                     { item.x = 0 + item.width;  }
