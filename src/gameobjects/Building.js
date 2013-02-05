@@ -23,12 +23,18 @@ function Building(properties) {
         this.sprite = new jaws.Sprite({image:"./assets/art/shop_1.png", anchor:"center", x:properties.x, y:properties.y});
     }
     
-    this.rect = function() {
-        return this.sprite.rect();
+    //Market
+    else if(properties.type == 5) {
+        this.sprite = new jaws.Sprite({image:"./assets/art/market_blueRed.png", anchor:"center", x:properties.x, y:properties.y});
     }
     
     this.draw = function() {
         this.sprite.draw();
     }
+    
+    this.rect = function() {
+        return this.sprite.rect();
+    }
+    
     
 }
