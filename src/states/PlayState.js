@@ -9,9 +9,10 @@ function PlayState() {
   var player_face;
   var face_anim;
   var grass_blocks;
-  var lanterns  = new jaws.SpriteList();
-  var zombies   = new jaws.SpriteList();
-  var buildings = new jaws.SpriteList();
+  var lanterns   = new jaws.SpriteList();
+  var zombies    = new jaws.SpriteList();
+  var buildings  = new jaws.SpriteList();
+  var boundaries = new jaws.SpriteList();
   var width  = 72;
   var height = 54;
   var game_width_pixels  = width*32;
@@ -57,9 +58,31 @@ function PlayState() {
 	// zombies.push( new Zombie(100,500) );
 // 	
 	/* Building setup. */
-	buildings.push( new Building({type:4,x:200,y:350}));
+	// buildings.push( new Building({type:4,x:200,y:350}));
 	buildings.push( new Building({type:3,x:550,y:350}));
 	buildings.push( new Building({type:2,x:330,y:680}));
+	
+	/* Boundaries setup. */
+	var offset = 35;
+	var leftWall = new Building({type:6,x:offset,y:(game_height_pixels/2)});
+	leftWall.sprite.setWidth(game_height_pixels);
+	leftWall.sprite.rotate(90);
+	
+	
+	var rightWall = new Building({type:6,x:(game_width_pixels-offset),y:(game_height_pixels/2)});
+	rightWall.sprite.setWidth(game_height_pixels);
+	rightWall.sprite.rotate(90);
+	
+	var topWall = new Building({type:6,x:(game_width_pixels/2),y:(offset)});
+	topWall.sprite.setWidth(game_width_pixels);
+	
+	var bottomWall = new Building({type:6,x:(game_width_pixels/2),y:(game_height_pixels-offset)});
+	bottomWall.sprite.setWidth(game_width_pixels);
+	
+	boundaries.push(leftWall);
+	boundaries.push(rightWall);
+	boundaries.push(topWall);
+	boundaries.push(bottomWall);
 	
 	jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
@@ -67,6 +90,9 @@ function PlayState() {
 
 
   this.update = function() {
+    console.log("Position: (" + player.sprite.x + ", " + player.sprite.y +")");  
+    
+      
   	lanterns.update();
   	zombies.forEach(function(zombie, index, zombies) {
   	    seek(zombie,{x:player.x, y:player.y});
@@ -175,10 +201,11 @@ function PlayState() {
     viewport.drawTileMap(tile_map);
     
     viewport.apply(function() {
-        player.draw();
         lanterns.draw();
         zombies.draw();
         buildings.draw();
+        player.draw();
+        boundaries.draw();
         });
         
     player_face.draw();

@@ -19,11 +19,13 @@ function init() {
 	jaws.assets.add("./assets/art/cabin_1.png");
 	jaws.assets.add("./assets/art/hut_1_side.png");
 	jaws.assets.add("./assets/art/hut_1.png");
+	jaws.assets.add("./assets/art/gate.png");
 	jaws.assets.add("./assets/art/market_blueRed.png");
 	jaws.assets.add("./assets/art/shop_1.png");
 	jaws.assets.add("./assets/art/shop_2.png");
 	jaws.assets.add("./assets/art/shop_3.png");
 	jaws.assets.add("./assets/art/shop_4.png");
+	
 	jaws.start(MenuState);
 	
 }

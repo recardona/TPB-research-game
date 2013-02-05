@@ -28,6 +28,10 @@ function Building(properties) {
         this.sprite = new jaws.Sprite({image:"./assets/art/market_blueRed.png", anchor:"center", x:properties.x, y:properties.y});
     }
     
+    else if(properties.type == 6) {
+        this.sprite = new jaws.Sprite({image:"./assets/art/gate.png", anchor:"center", x:properties.x, y:properties.y});
+    }
+    
     this.draw = function() {
         this.sprite.draw();
     }
