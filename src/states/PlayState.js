@@ -51,18 +51,13 @@ function PlayState() {
 	lanterns.push( new Lantern(jaws.width*3/4, jaws.height*3/2) );
 	lanterns.push( new Lantern(2*jaws.width*3/4, jaws.height*3/2) );
 	lanterns.push( new Lantern(3*jaws.width*3/4, jaws.height*3/2) );
-	// tile_map.push(lanterns);
 	
-	/* Zombie setup. */
-	// zombies.push( new Zombie(200,100) );
-	// zombies.push( new Zombie(100,300) );
-	// zombies.push( new Zombie(100,500) );
 	
 	
 	/* Building setup. */
-	buildings.push( new Building({type:3,x:550,y:350}));
-	buildings.push( new Building({type:2,x:330,y:680}));
-	
+	// buildings.push( new Building({type:3,x:550,y:350}));
+	// buildings.push( new Building({type:2,x:330,y:680}));
+// 	
 	/* Test Medpac setup*/
 	medpacs.push( new Medpac(1000,350) );
 	medpacs.push( new Medpac(500,680) );
@@ -277,29 +272,38 @@ function PlayState() {
    */
   function updatePlayerLifeIndicator(player, player_face) {
       //check the player's life, and change the player's face accordingly
-    if(player.life > 80) {
+    if(player.life > 87.5) {
         player_face.setImage(face_anim.frames[0]);
     }
     
-    else if(player.life > 60) {
+    else if(player.life > 75) {
         player_face.setImage(face_anim.frames[1]);
     }
     
-    else if(player.life > 40) {
+    else if(player.life > 62.5) {
         player_face.setImage(face_anim.frames[2]);
     }
     
-    else if(player.life > 20) {
+    else if(player.life > 50) {
         player_face.setImage(face_anim.frames[3]);
     }
     
-    else if(player.life > 0) {
+    else if(player.life > 37.5) {
         player_face.setImage(face_anim.frames[4]);
     }
     
-    else if(player.life < 0) {
+    else if(player.life > 25) {
         player_face.setImage(face_anim.frames[5]);
     }
+    
+    else if(player.life > 12.5) {
+        player_face.setImage(face_anim.frames[6]);
+    }
+    
+    else {
+    	player_face.setImage(face_anim.frames[7]);
+    }
+    
   }
   
   
