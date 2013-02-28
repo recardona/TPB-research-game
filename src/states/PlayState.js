@@ -48,9 +48,9 @@ function PlayState() {
    
     
     /* Lantern setup. */
-	lanterns.push( new Lantern(jaws.width*3/4, jaws.height*3/2) );
-	lanterns.push( new Lantern(2*jaws.width*3/4, jaws.height*3/2) );
-	lanterns.push( new Lantern(3*jaws.width*3/4, jaws.height*3/2) );
+	lanterns.push( new Lantern(jaws.width*3/4, jaws.height*3/2, false) );
+	lanterns.push( new Lantern(2*jaws.width*3/4, jaws.height*3/2, true) );
+	lanterns.push( new Lantern(3*jaws.width*3/4, jaws.height*3/2, false) );
 	
 	
 	
@@ -65,19 +65,19 @@ function PlayState() {
 	
 	/* ------------------- Boundaries setup. ------------------- */
 	var offset = 35;
-	var leftWall = new Building({type:6,x:offset,y:(game_height_pixels/2)});
+	var leftWall = new House({type:6,x:offset,y:(game_height_pixels/2)});
 	leftWall.sprite.setWidth(game_height_pixels);
 	leftWall.sprite.rotate(90);
 	
 	
-	var rightWall = new Building({type:6,x:(game_width_pixels-offset),y:(game_height_pixels/2)});
+	var rightWall = new House({type:6,x:(game_width_pixels-offset),y:(game_height_pixels/2)});
 	rightWall.sprite.setWidth(game_height_pixels);
 	rightWall.sprite.rotate(90);
 	
-	var topWall = new Building({type:6,x:(game_width_pixels/2),y:(offset)});
+	var topWall = new House({type:6,x:(game_width_pixels/2),y:(offset)});
 	topWall.sprite.setWidth(game_width_pixels);
 	
-	var bottomWall = new Building({type:6,x:(game_width_pixels/2),y:(game_height_pixels-offset)});
+	var bottomWall = new House({type:6,x:(game_width_pixels/2),y:(game_height_pixels-offset)});
 	bottomWall.sprite.setWidth(game_width_pixels);
 	
 	boundaries.push(leftWall);
@@ -100,11 +100,6 @@ function PlayState() {
     
       
   	lanterns.update();
-  	zombies.forEach(function(zombie, index, zombies) {
-  	    seek(zombie,{x:player.x, y:player.y});
-  	    // wander(zombie);
-    });
-    
     
     var playerDidCollide = false;
     
@@ -122,6 +117,12 @@ function PlayState() {
             player.sprite.x += 3;
             playerCollidedWithBuilding = true;
         }
+        
+		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
+        	player.sprite.x += 3;
+        	playerCollidedWithLantern = true;
+        }
+
             	 
     	player.sprite.setImage(player.anim_walk_left.next());
     }
@@ -137,8 +138,14 @@ function PlayState() {
             playerCollidedWithBuilding = true;
         }
         
+		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
+        	player.sprite.x -= 3;
+        	playerCollidedWithLantern = true;
+        }
+
     	player.sprite.setImage(player.anim_walk_right.next());
     }
+    
     
     if(jaws.pressed("up"))    
     {
@@ -149,10 +156,16 @@ function PlayState() {
         if(jaws.collideOneWithMany(player,buildings).length > 0) {
             player.sprite.y += 3;    
             playerCollidedWithBuilding = true;
-        } 
+        }
+        
+		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
+        	player.sprite.y += 3;
+        	playerCollidedWithLantern = true;
+        }
     	
     	player.sprite.setImage(player.anim_walk_up.next()); 
     }
+    
     
     else if(jaws.pressed("down"))  
     { 
@@ -164,12 +177,20 @@ function PlayState() {
             player.sprite.y -= 3;
             playerCollidedWithBuilding = true;    
         }
+        
+        if(jaws.collideOneWithMany(player,lanterns).length > 0) {
+        	player.sprite.y -= 3;
+        	playerCollidedWithLantern = true;
+        }
 
     	player.sprite.setImage(player.anim_walk_down.next());
     }
     /* ========================================================= */
     
     
+
+
+
     
     /* --------- check collisions against all lanterns --------- */
     var playerCollidedWithLantern = false;
@@ -206,6 +227,9 @@ function PlayState() {
     }
        
     /* ========================================================= */
+    
+    
+    
     
     
     
@@ -254,16 +278,15 @@ function PlayState() {
     viewport.drawTileMap(tile_map);
     
     viewport.apply(function() {
-        lanterns.draw();
         zombies.draw();
         buildings.draw();
-        medpacs.draw();
         player.draw();
+        lanterns.draw();
+        medpacs.draw();
         boundaries.draw();
         });
         
     player_face.draw();
-    
   }
   
   
