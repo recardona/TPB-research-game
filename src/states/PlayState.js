@@ -9,8 +9,9 @@ function PlayState() {
   var player_face;
   var face_anim;
   var grass_blocks;
+  var roads      = new jaws.SpriteList();
+  var trees		 = new jaws.SpriteList();
   var lanterns   = new jaws.SpriteList();
-  var zombies    = new jaws.SpriteList();
   var buildings  = new jaws.SpriteList();
   var boundaries = new jaws.SpriteList();
   var medpacs    = new jaws.SpriteList();
@@ -26,7 +27,9 @@ function PlayState() {
   this.setup = function() {
   	
   	/* Background setup. */
+	roads = setupRoadTiles();
   	grass_blocks = setupBackgroundTiles();
+
   	
   	//the viewport is all the viewable area of a larger tilemap.  It allows scrolling.
   	viewport  = new jaws.Viewport({max_x:width*32, max_y:height*32});
@@ -39,7 +42,7 @@ function PlayState() {
   	tile_map.push(grass_blocks);
   	
   	/* Player setup. */
-  	player = new Player(10,100);
+  	player = new Player(game_width_pixels/2,game_height_pixels/2 + 40);
   	
     /* Player face setup - HUD */
    face_anim = new jaws.Animation({sprite_sheet: "./assets/art/status_faces.png", frame_size:[215,215],loop:false});
@@ -53,11 +56,14 @@ function PlayState() {
 	lanterns.push( new Lantern(3*jaws.width*3/4, jaws.height*3/2, false) );
 	
 	
+	/* House setup. */
+	buildings.push( new House({type:1,x:game_width_pixels/4.5,y:game_height_pixels/4}));
+	buildings.push( new House({type:2,x:game_width_pixels*5/8,y:game_height_pixels*3/8}));
+	buildings.push( new House({type:3,x:game_width_pixels/4.6,y:game_height_pixels*6/8}));
+	buildings.push( new House({type:4,x:game_width_pixels*4.5/8,y:game_height_pixels*6/9}));
+	buildings.push( new House({type:5,x:game_width_pixels*6.3/8,y:game_height_pixels*6.2/9}));
 	
-	/* Building setup. */
-	// buildings.push( new Building({type:3,x:550,y:350}));
-	// buildings.push( new Building({type:2,x:330,y:680}));
-// 	
+
 	/* Test Medpac setup*/
 	medpacs.push( new Medpac(1000,350) );
 	medpacs.push( new Medpac(500,680) );
@@ -278,8 +284,8 @@ function PlayState() {
     viewport.drawTileMap(tile_map);
     
     viewport.apply(function() {
-        zombies.draw();
         buildings.draw();
+        roads.draw();
         player.draw();
         lanterns.draw();
         medpacs.draw();
@@ -340,6 +346,16 @@ function PlayState() {
     }
     
     return backgroundTiles;
+  }
+  
+  function setupRoadTiles() {
+  	var roadTiles = new jaws.SpriteList();
+  	
+  	for(var yIndex = 0; yIndex < 9; yIndex++) {
+  		roadTiles.push( new jaws.Sprite({image: "./assets/art/driveway.png", x:game_width_pixels*.9/3,y:(game_height_pixels*yIndex/9)}));
+  	}
+  	  	
+  	return roadTiles;
   }
 
 
