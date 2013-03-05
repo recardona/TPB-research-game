@@ -15,6 +15,7 @@ function PlayState() {
   var buildings  = new jaws.SpriteList();
   var boundaries = new jaws.SpriteList();
   var medpacs    = new jaws.SpriteList();
+  var sqrt_nine_halves = Math.sqrt(9/2);
   var width  = 72;
   var height = 54;
   var game_width_pixels  = width*32;
@@ -45,9 +46,9 @@ function PlayState() {
   	player = new Player(1700,800);
   	
     /* Player face setup - HUD */
-   face_anim = new jaws.Animation({sprite_sheet: "./assets/art/status_faces.png", frame_size:[215,215],loop:false});
-   player_face = new jaws.Sprite({x:718, y:50, anchor:"center", scale: 0.5});
-   player_face.setImage(face_anim.next());
+    face_anim = new jaws.Animation({sprite_sheet: "./assets/art/status_faces.png", frame_size:[215,215],loop:false});
+    player_face = new jaws.Sprite({x:718, y:50, anchor:"center", scale: 0.5});
+    player_face.setImage(face_anim.next());
    
     
     /* Lantern setup. */
@@ -115,19 +116,30 @@ function PlayState() {
     
     if(jaws.pressed("left"))
     {
-        player.sprite.x -= 3;
+		var delta_x = 0;
+    	if(jaws.pressed("up") || jaws.pressed("down")) {
+    		delta_x = sqrt_nine_halves; 
+    		// I have to move 3 diagonally, so each of the components(x and y)
+    		// have to be identical, and both less than 3.  diagonal_delta = 3, so:
+    		// 3^2 = x^2 + y^2 => 9 = 2*x^2 => sqrt(9/2) = x 
+    	}
+    	else {
+    		delta_x = 3;
+    	}
+    	
+        player.sprite.x -= delta_x;
         player.facingHorizontally = true;
         
         //if the player collided, revert the move
   		buildings.forEach(function(building,index,array) {
   			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
-	            player.sprite.x += 3;
+	            player.sprite.x += delta_x;
 	            playerCollidedWithBuilding = true;
   			}
   		});
   		
 		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
-        	player.sprite.x += 3;
+        	player.sprite.x += delta_x;
         	playerCollidedWithLantern = true;
         }
 
@@ -137,19 +149,30 @@ function PlayState() {
     
     else if(jaws.pressed("right")) 
     { 
-        player.sprite.x += 3;
+    	var delta_x = 0;
+    	if(jaws.pressed("up") || jaws.pressed("down")) {
+    		delta_x = sqrt_nine_halves; 
+    		// I have to move 3 diagonally, so each of the components(x and y)
+    		// have to be identical, and both less than 3.  diagonal_delta = 3, so:
+    		// 3^2 = x^2 + y^2 => 9 = 2*x^2 => sqrt(9/2) = x 
+    	}
+    	else {
+    		delta_x = 3;
+    	}
+
+        player.sprite.x += delta_x;
         player.facingHorizontally = true;
         
         //if the player collided, revert the move
 		buildings.forEach(function(building,index,array) {
   			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
-	            player.sprite.x -= 3;
+	            player.sprite.x -= delta_x;
 	            playerCollidedWithBuilding = true;
   			}
   		});
         
 		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
-        	player.sprite.x -= 3;
+        	player.sprite.x -= delta_x;
         	playerCollidedWithLantern = true;
         }
 
@@ -159,19 +182,30 @@ function PlayState() {
     
     if(jaws.pressed("up"))    
     {
-        player.sprite.y -= 3;
+    	var delta_y = 0;
+    	if(jaws.pressed("left") || jaws.pressed("right")) {
+    		delta_y = sqrt_nine_halves; 
+    		// I have to move 3 diagonally, so each of the components(x and y)
+    		// have to be identical, and both less than 3.  diagonal_delta = 3, so:
+    		// 3^2 = x^2 + y^2 => 9 = 2*y^2 => sqrt(9/2) = y 
+    	}
+    	else {
+    		delta_y = 3;
+    	}
+    	    	
+        player.sprite.y -= delta_y;
         player.facingHorizontally = false;
         
         //if the player collided, revert the move
 		buildings.forEach(function(building,index,array) {
   			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
-	            player.sprite.y += 3;
+	            player.sprite.y += delta_y;
 	            playerCollidedWithBuilding = true;
   			}
   		});
         
 		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
-        	player.sprite.y += 3;
+        	player.sprite.y += delta_y;
         	playerCollidedWithLantern = true;
         }
     	
@@ -181,19 +215,31 @@ function PlayState() {
     
     else if(jaws.pressed("down"))  
     { 
-        player.sprite.y += 3;
+		var delta_y = 0;
+    	if(jaws.pressed("left") || jaws.pressed("right")) {
+    		delta_y = sqrt_nine_halves; 
+    		// I have to move 3 diagonally, so each of the components(x and y)
+    		// have to be identical, and both less than 3.  diagonal_delta = 3, so:
+    		// 3^2 = x^2 + y^2 => 9 = 2*y^2 => sqrt(9/2) = y 
+    	}
+    	else {
+    		delta_y = 3;
+    	}
+
+    	
+        player.sprite.y += delta_y;
         player.facingHorizontally = false;
         
         //if the player collided, revert the move
 		buildings.forEach(function(building,index,array) {
   			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
-	            player.sprite.y -= 3;
+	            player.sprite.y -= delta_y;
 	            playerCollidedWithBuilding = true;
   			}
   		});
         
         if(jaws.collideOneWithMany(player,lanterns).length > 0) {
-        	player.sprite.y -= 3;
+        	player.sprite.y -= delta_y;
         	playerCollidedWithLantern = true;
         }
 
@@ -250,11 +296,8 @@ function PlayState() {
     /* set collision flags */
     playerDidCollide = (playerCollidedWithLantern || playerCollidedWithBuilding);
     
-    
-    
     /* ------------- do player damage calculations ------------- */
     if(player.medicineLife > 75 && playerCollidedWithLantern) {
-       //TODO QUESTION:  How do I penalize players with too much medicine?
        player.life -= player.diseasePenalty;
     }
    
@@ -271,8 +314,6 @@ function PlayState() {
     
     /* check the player's life, and change the player's face accordingly */
     updatePlayerLifeIndicator(player, player_face);
-    
-    
     viewport.centerAround(player.sprite);
     forceInsideCanvas(player.sprite)
     // bullets.removeIf(isOutsideCanvas) // delete items for which isOutsideCanvas(item) is true
@@ -292,14 +333,13 @@ function PlayState() {
     viewport.drawTileMap(tile_map);
     
     viewport.apply(function() {
-        
         roads.draw();
         buildings.draw();
         player.draw();
         lanterns.draw();
         medpacs.draw();
         boundaries.draw();
-        });
+	});
         
     player_face.draw();
   }
@@ -356,6 +396,7 @@ function PlayState() {
     
     return backgroundTiles;
   }
+  
   
   function setupRoadTiles() {
   	var roadTiles = new jaws.SpriteList();
