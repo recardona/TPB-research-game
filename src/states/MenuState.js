@@ -13,7 +13,7 @@ function MenuState() {
     index = 0
     jaws.on_keydown(["down","s"],       function()  { index++; if(index >= items.length) {index=items.length-1} } )
     jaws.on_keydown(["up","w"],         function()  { index--; if(index < 0) {index=0} } )
-    jaws.on_keydown(["enter","space"],  function()  { if(items[index]=="Start") {jaws.switchGameState(PlayState, {fps: 40   }) } } )
+    jaws.on_keydown(["enter","space"],  function()  { if(items[index]=="Start") {jaws.switchGameState(PlayState, {fps: 41 }) } } )
   }
 
   this.draw = function() {
