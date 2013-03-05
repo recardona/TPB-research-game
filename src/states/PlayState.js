@@ -42,7 +42,7 @@ function PlayState() {
   	tile_map.push(grass_blocks);
   	
   	/* Player setup. */
-  	player = new Player(game_width_pixels/2,game_height_pixels/2 + 40);
+  	player = new Player(1700,800);
   	
     /* Player face setup - HUD */
    face_anim = new jaws.Animation({sprite_sheet: "./assets/art/status_faces.png", frame_size:[215,215],loop:false});
@@ -57,11 +57,11 @@ function PlayState() {
 	
 	
 	/* House setup. */
-	buildings.push( new House({type:1,x:game_width_pixels/4.5,y:game_height_pixels/4}));
-	buildings.push( new House({type:2,x:game_width_pixels*5/8,y:game_height_pixels*3/8}));
-	buildings.push( new House({type:3,x:game_width_pixels/4.6,y:game_height_pixels*6/8}));
-	buildings.push( new House({type:4,x:game_width_pixels*4.5/8,y:game_height_pixels*6/9}));
-	buildings.push( new House({type:5,x:game_width_pixels*6.3/8,y:game_height_pixels*6.2/9}));
+	buildings.push( new Building({type:1,x:game_width_pixels/4.5,y:game_height_pixels/4}));
+	buildings.push( new Building({type:2,x:game_width_pixels*5/8,y:game_height_pixels*3/8}));
+	buildings.push( new Building({type:3,x:game_width_pixels/4.6,y:game_height_pixels*6/8}));
+	buildings.push( new Building({type:4,x:game_width_pixels*4.5/8,y:game_height_pixels*5.9/9}));
+	buildings.push( new Building({type:5,x:game_width_pixels*6.3/8,y:game_height_pixels*6.2/9}));
 	
 
 	/* Test Medpac setup*/
@@ -71,19 +71,19 @@ function PlayState() {
 	
 	/* ------------------- Boundaries setup. ------------------- */
 	var offset = 35;
-	var leftWall = new House({type:6,x:offset,y:(game_height_pixels/2)});
+	var leftWall = new Building({type:6,x:offset,y:(game_height_pixels/2)});
 	leftWall.sprite.setWidth(game_height_pixels);
 	leftWall.sprite.rotate(90);
 	
 	
-	var rightWall = new House({type:6,x:(game_width_pixels-offset),y:(game_height_pixels/2)});
+	var rightWall = new Building({type:6,x:(game_width_pixels-offset),y:(game_height_pixels/2)});
 	rightWall.sprite.setWidth(game_height_pixels);
 	rightWall.sprite.rotate(90);
 	
-	var topWall = new House({type:6,x:(game_width_pixels/2),y:(offset)});
+	var topWall = new Building({type:6,x:(game_width_pixels/2),y:(offset)});
 	topWall.sprite.setWidth(game_width_pixels);
 	
-	var bottomWall = new House({type:6,x:(game_width_pixels/2),y:(game_height_pixels-offset)});
+	var bottomWall = new Building({type:6,x:(game_width_pixels/2),y:(game_height_pixels-offset)});
 	bottomWall.sprite.setWidth(game_width_pixels);
 	
 	boundaries.push(leftWall);
@@ -119,11 +119,13 @@ function PlayState() {
         player.facingHorizontally = true;
         
         //if the player collided, revert the move
-        if(jaws.collideOneWithMany(player,buildings).length > 0) {
-            player.sprite.x += 3;
-            playerCollidedWithBuilding = true;
-        }
-        
+  		buildings.forEach(function(building,index,array) {
+  			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
+	            player.sprite.x += 3;
+	            playerCollidedWithBuilding = true;
+  			}
+  		});
+  		
 		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
         	player.sprite.x += 3;
         	playerCollidedWithLantern = true;
@@ -139,10 +141,12 @@ function PlayState() {
         player.facingHorizontally = true;
         
         //if the player collided, revert the move
-        if(jaws.collideOneWithMany(player,buildings).length > 0) {
-            player.sprite.x -= 3;    
-            playerCollidedWithBuilding = true;
-        }
+		buildings.forEach(function(building,index,array) {
+  			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
+	            player.sprite.x -= 3;
+	            playerCollidedWithBuilding = true;
+  			}
+  		});
         
 		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
         	player.sprite.x -= 3;
@@ -159,10 +163,12 @@ function PlayState() {
         player.facingHorizontally = false;
         
         //if the player collided, revert the move
-        if(jaws.collideOneWithMany(player,buildings).length > 0) {
-            player.sprite.y += 3;    
-            playerCollidedWithBuilding = true;
-        }
+		buildings.forEach(function(building,index,array) {
+  			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
+	            player.sprite.y += 3;
+	            playerCollidedWithBuilding = true;
+  			}
+  		});
         
 		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
         	player.sprite.y += 3;
@@ -179,10 +185,12 @@ function PlayState() {
         player.facingHorizontally = false;
         
         //if the player collided, revert the move
-        if(jaws.collideOneWithMany(player,buildings).length > 0) {
-            player.sprite.y -= 3;
-            playerCollidedWithBuilding = true;    
-        }
+		buildings.forEach(function(building,index,array) {
+  			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
+	            player.sprite.y -= 3;
+	            playerCollidedWithBuilding = true;
+  			}
+  		});
         
         if(jaws.collideOneWithMany(player,lanterns).length > 0) {
         	player.sprite.y -= 3;
@@ -284,8 +292,9 @@ function PlayState() {
     viewport.drawTileMap(tile_map);
     
     viewport.apply(function() {
-        buildings.draw();
+        
         roads.draw();
+        buildings.draw();
         player.draw();
         lanterns.draw();
         medpacs.draw();
@@ -352,7 +361,16 @@ function PlayState() {
   	var roadTiles = new jaws.SpriteList();
   	
   	for(var yIndex = 0; yIndex < 9; yIndex++) {
-  		roadTiles.push( new jaws.Sprite({image: "./assets/art/driveway.png", x:game_width_pixels*.9/3,y:(game_height_pixels*yIndex/9)}));
+  		roadTiles.push( new jaws.Sprite({image: "./assets/art/driveway.png", 
+  											 x:game_width_pixels*.9/3,
+  											 y:(game_height_pixels*yIndex/9)}));
+  	}
+  	
+  	for(var xIndex = 4.5; xIndex < 12; xIndex++) {
+  		roadTiles.push( new jaws.Sprite({image: "./assets/art/driveway.png", 
+  									   x:xIndex*(game_width_pixels/11),
+  									   y:(game_height_pixels*.95/2),
+  									   angle:90}));
   	}
   	  	
   	return roadTiles;

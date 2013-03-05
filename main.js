@@ -9,8 +9,9 @@ function init() {
     jaws.assets.add("./assets/art/status_faces.png");
     
     /* Importing Background assets */
-    jaws.assets.add("./assets/art/grass.png");
     jaws.assets.add("./assets/art/gate.png");
+    jaws.assets.add("./assets/art/grass.png");
+    jaws.assets.add("./assets/art/grass_alt.png");
 	jaws.assets.add("./assets/art/grass_square1.png");
 	jaws.assets.add("./assets/art/grass_square2.png");
 	jaws.assets.add("./assets/art/trees_topmiddle.png");
