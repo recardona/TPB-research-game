@@ -9,12 +9,13 @@ function PlayState() {
   var player_face;
   var face_anim;
   var grass_blocks;
-  var roads      = new jaws.SpriteList();
-  var trees		 = new jaws.SpriteList();
-  var lanterns   = new jaws.SpriteList();
-  var buildings  = new jaws.SpriteList();
-  var boundaries = new jaws.SpriteList();
-  var medpacs    = new jaws.SpriteList();
+  var roads       = new jaws.SpriteList();
+  var trees		  = new jaws.SpriteList();
+  var lanterns    = new jaws.SpriteList();
+  var buildings   = new jaws.SpriteList();
+  var boundaries  = new jaws.SpriteList();
+  var shrubberies = new jaws.SpriteList();
+  var medpacs     = new jaws.SpriteList();
   var sqrt_nine_halves = Math.sqrt(9/2);
   var width  = 72;
   var height = 54;
@@ -22,15 +23,12 @@ function PlayState() {
   var game_height_pixels = height*32;
   var viewport;
   var tile_map;
-  // var background;
   
-
   this.setup = function() {
   	
   	/* Background setup. */
 	roads = setupRoadTiles();
   	grass_blocks = setupBackgroundTiles();
-
   	
   	//the viewport is all the viewable area of a larger tilemap.  It allows scrolling.
   	viewport  = new jaws.Viewport({max_x:width*32, max_y:height*32});
@@ -43,7 +41,7 @@ function PlayState() {
   	tile_map.push(grass_blocks);
   	
   	/* Player setup. */
-  	player = new Player(1700,800);
+  	player = new Player(1000,1000);
   	
     /* Player face setup - HUD */
     face_anim = new jaws.Animation({sprite_sheet: "./assets/art/status_faces.png", frame_size:[215,215],loop:false});
@@ -51,10 +49,17 @@ function PlayState() {
     player_face.setImage(face_anim.next());
    
     
-    /* Lantern setup. */
-	lanterns.push( new Lantern(jaws.width*3/4, jaws.height*3/2, false) );
-	lanterns.push( new Lantern(2*jaws.width*3/4, jaws.height*3/2, true) );
-	lanterns.push( new Lantern(3*jaws.width*3/4, jaws.height*3/2, false) );
+    /* Lantern setup. */ 
+	lanterns.push( new Lantern(jaws.width*3.43/4, game_height_pixels*1.3/4, true) );
+	lanterns.push( new Lantern(jaws.width*3.43/4, game_height_pixels*3.24/4, true) );
+	lanterns.push( new Lantern(game_width_pixels*1.5/4, game_height_pixels*1.435/4, false) );
+	lanterns.push( new Lantern(game_width_pixels*2.49/4, game_height_pixels*1.82/4, true) );
+	lanterns.push( new Lantern(game_width_pixels*3.185/4, game_height_pixels*2.33/4, true) );
+	lanterns.push( new Lantern(game_width_pixels*2.042/4, game_height_pixels*2.33/4, true) );
+	lanterns.push( new Lantern(game_width_pixels*1.5/4, game_height_pixels*2.65/4, false) );
+	lanterns.push( new Lantern(game_width_pixels*1.158/4, game_height_pixels*2.0425/4, false) );
+	lanterns.push( new Lantern(game_width_pixels*3.75/4, game_height_pixels*1.82/4, false) );
+	lanterns.push( new Lantern(game_width_pixels*3.185/4, game_height_pixels*1.82/4, false) );
 	
 	
 	/* House setup. */
@@ -102,17 +107,20 @@ function PlayState() {
 
   this.update = function() {
     // console.log("Position: (" + player.sprite.x + ", " + player.sprite.y +")");
-    console.log("Player life: " + player.life);
-    console.log("Player medicine life: " + player.medicineLife);  
+    // console.log("Player life: " + player.life);
+    // console.log("Player medicine life: " + player.medicineLife);  
     
       
   	lanterns.update();
     
     var playerDidCollide = false;
+    var playerCollidedWithBuilding  = false;
+    var playerCollidedWithLantern   = false;
+    var playerCollidedWithBoundary  = false;
+    var playerCollidedWithShrubbery = false;
     
     
     /* ---- handle input and check for building collisions ----- */
-    var playerCollidedWithBuilding = false;
     
     if(jaws.pressed("left"))
     {
@@ -253,7 +261,6 @@ function PlayState() {
 
     
     /* --------- check collisions against all lanterns --------- */
-    var playerCollidedWithLantern = false;
     
     if(jaws.collideOneWithMany(player,lanterns).length > 0) {
         player.diseasePenalty = 0.001; //while inside, the disease acts slower...
@@ -339,8 +346,9 @@ function PlayState() {
         lanterns.draw();
         medpacs.draw();
         boundaries.draw();
-	});
         
+	});
+   
     player_face.draw();
   }
   

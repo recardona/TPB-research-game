@@ -34,6 +34,9 @@ function init() {
     
     /* Importing Item assets */
     jaws.assets.add("./assets/art/medpac.png");
+    
+    /* Importing Test assets */
+    jaws.assets.add("./assets/art/parallax_1.png");
 	
 	jaws.start(MenuState);
 	
