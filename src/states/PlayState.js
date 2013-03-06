@@ -45,30 +45,14 @@ function PlayState() {
   	
     /* Player face setup - HUD */
     face_anim = new jaws.Animation({sprite_sheet: "./assets/art/status_faces.png", frame_size:[215,215],loop:false});
-    player_face = new jaws.Sprite({x:718, y:50, anchor:"center", scale: 0.5});
+    player_face = new jaws.Sprite({x:675, y:90, anchor:"center", scale: 0.65});
     player_face.setImage(face_anim.next());
    
-    
     /* Lantern setup. */ 
-	lanterns.push( new Lantern(jaws.width*3.43/4, game_height_pixels*1.3/4, true) );
-	lanterns.push( new Lantern(jaws.width*3.43/4, game_height_pixels*3.24/4, true) );
-	lanterns.push( new Lantern(game_width_pixels*1.5/4, game_height_pixels*1.435/4, false) );
-	lanterns.push( new Lantern(game_width_pixels*2.49/4, game_height_pixels*1.82/4, true) );
-	lanterns.push( new Lantern(game_width_pixels*3.185/4, game_height_pixels*2.33/4, true) );
-	lanterns.push( new Lantern(game_width_pixels*2.042/4, game_height_pixels*2.33/4, true) );
-	lanterns.push( new Lantern(game_width_pixels*1.5/4, game_height_pixels*2.65/4, false) );
-	lanterns.push( new Lantern(game_width_pixels*1.158/4, game_height_pixels*2.0425/4, false) );
-	lanterns.push( new Lantern(game_width_pixels*3.75/4, game_height_pixels*1.82/4, false) );
-	lanterns.push( new Lantern(game_width_pixels*3.185/4, game_height_pixels*1.82/4, false) );
-	
-	
-	/* House setup. */
-	buildings.push( new Building({type:1,x:game_width_pixels/4.5,y:game_height_pixels/4}));
-	buildings.push( new Building({type:2,x:game_width_pixels*5/8,y:game_height_pixels*3/8}));
-	buildings.push( new Building({type:3,x:game_width_pixels/4.6,y:game_height_pixels*6/8}));
-	buildings.push( new Building({type:4,x:game_width_pixels*4.5/8,y:game_height_pixels*5.9/9}));
-	buildings.push( new Building({type:5,x:game_width_pixels*6.3/8,y:game_height_pixels*6.2/9}));
-	
+    lanterns = setupLanterns();
+    
+	/* Building setup. */
+	buildings = setupBuildings();
 
 	/* Test Medpac setup*/
 	medpacs.push( new Medpac(1000,350) );
@@ -118,8 +102,6 @@ function PlayState() {
     var playerCollidedWithLantern   = false;
     var playerCollidedWithBoundary  = false;
     var playerCollidedWithShrubbery = false;
-    
-    
     /* ---- handle input and check for building collisions ----- */
     
     if(jaws.pressed("left"))
@@ -299,9 +281,9 @@ function PlayState() {
     
     
     
-    
     /* set collision flags */
     playerDidCollide = (playerCollidedWithLantern || playerCollidedWithBuilding);
+    
     
     /* ------------- do player damage calculations ------------- */
     if(player.medicineLife > 75 && playerCollidedWithLantern) {
@@ -391,8 +373,9 @@ function PlayState() {
     }
     
   }
+ 
   
-  
+  /* ------------- Auxiliary Setup Functions ------------- */
   function setupBackgroundTiles() {
     var backgroundTiles = new jaws.SpriteList();
     
@@ -424,6 +407,39 @@ function PlayState() {
   	  	
   	return roadTiles;
   }
+  
+  
+  function setupLanterns() {
+  	var lanterns = new jaws.SpriteList();
+  	
+	lanterns.push( new Lantern(jaws.width*3.43/4, game_height_pixels*1.3/4, true) );
+	lanterns.push( new Lantern(jaws.width*3.43/4, game_height_pixels*3.24/4, true) );
+	lanterns.push( new Lantern(game_width_pixels*1.5/4, game_height_pixels*1.435/4, false) );
+	lanterns.push( new Lantern(game_width_pixels*2.49/4, game_height_pixels*1.82/4, true) );
+	lanterns.push( new Lantern(game_width_pixels*3.185/4, game_height_pixels*2.33/4, true) );
+	lanterns.push( new Lantern(game_width_pixels*2.042/4, game_height_pixels*2.33/4, true) );
+	lanterns.push( new Lantern(game_width_pixels*1.5/4, game_height_pixels*2.65/4, false) );
+	lanterns.push( new Lantern(game_width_pixels*1.158/4, game_height_pixels*2.0425/4, false) );
+	lanterns.push( new Lantern(game_width_pixels*3.75/4, game_height_pixels*1.82/4, false) );
+	lanterns.push( new Lantern(game_width_pixels*3.185/4, game_height_pixels*1.82/4, false) );
+
+  	return lanterns;
+  }
+  
+  
+  function setupBuildings() {
+  	var buildings = new jaws.SpriteList();
+  	
+  	buildings.push( new Building({type:1,x:game_width_pixels/4.5,y:game_height_pixels/4}));
+	buildings.push( new Building({type:2,x:game_width_pixels*5/8,y:game_height_pixels*3/8}));
+	buildings.push( new Building({type:3,x:game_width_pixels/4.6,y:game_height_pixels*6/8}));
+	buildings.push( new Building({type:4,x:game_width_pixels*4.5/8,y:game_height_pixels*5.9/9}));
+	buildings.push( new Building({type:5,x:game_width_pixels*6.3/8,y:game_height_pixels*6.2/9}));
+	
+	return buildings;
+  }
+  /* ========================================================= */
+
 
 
   /* Simular to example1 but now we're using jaws properties to get width and height of canvas instead */
