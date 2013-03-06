@@ -27,7 +27,7 @@ function MenuState() {
   	if(lightbulb_on) {
 		var rand = random_sigmoid();
 		
-  		if(rand > 0.7 || rand < -0.7) {
+  		if(rand > 0.8 || rand < -0.8) {
   			rand = Math.abs(rand);
   			lightbulb_on = false;
   			title_img.setImage(title_anim.next());
