@@ -9,6 +9,7 @@ function PlayState() {
   var player_face;
   var face_anim;
   var grass_blocks;
+  var hud_border;
   var roads       = new jaws.SpriteList();
   var trees		  = new jaws.SpriteList();
   var lanterns    = new jaws.SpriteList();
@@ -45,8 +46,12 @@ function PlayState() {
   	
     /* Player face setup - HUD */
     face_anim = new jaws.Animation({sprite_sheet: "./assets/art/status_faces.png", frame_size:[215,215],loop:false});
-    player_face = new jaws.Sprite({x:675, y:90, anchor:"center", scale: 0.65});
+    player_face = new jaws.Sprite({x:675, y:90, anchor:"center", scale: 0.55});
     player_face.setImage(face_anim.next());
+    
+    hud_border = new jaws.Sprite({image: "./assets/art/hud_border.png", anchor:"center", x:675, y:90, scale:1.40});
+    
+    
    
     /* Lantern setup. */ 
     lanterns = setupLanterns();
@@ -328,9 +333,9 @@ function PlayState() {
         lanterns.draw();
         medpacs.draw();
         boundaries.draw();
-        
 	});
    
+    hud_border.draw();
     player_face.draw();
   }
   
@@ -439,7 +444,6 @@ function PlayState() {
 	return buildings;
   }
   /* ========================================================= */
-
 
 
   /* Simular to example1 but now we're using jaws properties to get width and height of canvas instead */

@@ -1,12 +1,16 @@
 
 function init() {
-
+	
+	/* Importing Title assets */
+    jaws.assets.add("./assets/art/title_animation.png");
+	
 	/* Importing Player assets */
     jaws.assets.add("./assets/art/player_LR_spritesheet_zombies.png");
     jaws.assets.add("./assets/art/player_spritesheet_leftright.png");
     jaws.assets.add("./assets/art/player_spritesheet_updown.png");
     jaws.assets.add("./assets/art/player_UD_spritesheet_zombies.png");
     jaws.assets.add("./assets/art/status_faces.png");
+    jaws.assets.add("./assets/art/hud_border.png");
     
     /* Importing Background assets */
     jaws.assets.add("./assets/art/gate.png");
@@ -35,9 +39,6 @@ function init() {
     /* Importing Item assets */
     jaws.assets.add("./assets/art/medpac.png");
     
-    /* Importing Test assets */
-    jaws.assets.add("./assets/art/parallax_1.png");
-	
 	jaws.start(MenuState);
 	
 }
