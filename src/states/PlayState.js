@@ -6,12 +6,8 @@
  */
 function PlayState() {
   var player;
-  var player_face;
-  var face_anim;
-  var face_anim_index;
+  var player_hud;
   var grass_blocks;
-  var hud_border;
-  var border_anim;
   var roads       = new jaws.SpriteList();
   var trees		  = new jaws.SpriteList();
   var lanterns    = new jaws.SpriteList();
@@ -46,16 +42,8 @@ function PlayState() {
   	/* Player setup. */
   	player = new Player(1000,1000);
   	
-    /* Player face setup - HUD */
-    face_anim = new jaws.Animation({sprite_sheet: "./assets/art/status_faces.png", frame_size:[215,215],loop:false});
-    player_face = new jaws.Sprite({x:675, y:90, anchor:"center", scale: 0.54});
-    player_face.setImage(face_anim.next());
-    face_anim_index = 0;
-    
-    border_anim = new jaws.Animation({sprite_sheet: "./assets/art/border_anim.png", frame_size:[243,243], loop:true});
-    hud_border = new jaws.Sprite({x:675, y:89, anchor:"center", scale:0.75});
-    hud_border.setImage(border_anim.next());
-
+    /* Player HUD setup. */
+    player_hud = new HUD(player);
     
     
    
@@ -107,6 +95,7 @@ function PlayState() {
     
       
   	lanterns.update();
+  	player_hud.update();
     
     var playerDidCollide = false;
     var playerCollidedWithBuilding  = false;
@@ -312,8 +301,8 @@ function PlayState() {
   
   
     
-    /* check the player's life, and change the player's face accordingly */
-    updatePlayerLifeIndicator(player, player_face);
+    
+    
     viewport.centerAround(player.sprite);
     forceInsideCanvas(player.sprite)
     // bullets.removeIf(isOutsideCanvas) // delete items for which isOutsideCanvas(item) is true
@@ -341,86 +330,10 @@ function PlayState() {
         boundaries.draw();
 	});
    
-    player_face.draw();
-    hud_border.draw();
+    player_hud.draw();
     
   }
   
-  
-  /* 
-   * Auxiliary player functions
-   */
-  function updatePlayerLifeIndicator(player, player_face) {
-     //check the player's life, and change the player's face accordingly
-	 
-	 //the face_anim_index is a global var that helps avoid setting the
-	 //player_face image if it has already been set.
-	 old_anim_index = face_anim_index;
-	 
-    
-    if(player.life > 87.5) {
-    	if(face_anim_index != 0) {
-    		player_face.setImage(face_anim.frames[0]);
-    		face_anim_index = 0;
-        }
-    }
-    
-    else if(player.life > 75) {
-    	if(face_anim_index != 1) {
-   	        player_face.setImage(face_anim.frames[1]);
-	        face_anim_index = 1;
-    	}
-    }
-    
-    else if(player.life > 62.5) {
-    	if(face_anim_index != 2) {
-    		player_face.setImage(face_anim.frames[2]);
-    	    face_anim_index = 2;
-    	}
-    }
-    
-    else if(player.life > 50) {
-    	if(face_anim_index != 3) {
-	        player_face.setImage(face_anim.frames[3]);
-    	    face_anim_index = 3;
-    	}
-    }
-    
-    else if(player.life > 37.5) {
-    	if(face_anim_index != 4) {
-        	player_face.setImage(face_anim.frames[4]);
-        	face_anim_index = 4;
-    	}
-    }
-    
-    else if(player.life > 25) {
-    	if(face_anim_index != 5) {
-        	player_face.setImage(face_anim.frames[5]);
-        	face_anim_index = 5;
-    	}
-    }
-    
-    else if(player.life > 12.5) {
-    	if(face_anim_index != 6) {
-        	player_face.setImage(face_anim.frames[6]);
-        	face_anim_index = 6;
-    	}
-    }
-    
-    else {
-    	if(face_anim_index != 7) {
-    		player_face.setImage(face_anim.frames[7]);
-    		face_anim_index = 7;
-    	}
-    }
-    
-    //if there is a face change, highlight the HUD box to show the player
-    if(old_anim_index != face_anim_index) {
-		hud_border.setImage(border_anim.next());
-		setTimeout(function(){hud_border.setImage(border_anim.next());},750);
-    }
-    
-  }
  
   
   /* ------------- Auxiliary Setup Functions ------------- */
