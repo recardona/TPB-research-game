@@ -11,6 +11,8 @@ function init() {
     jaws.assets.add("./assets/art/player_UD_spritesheet_zombies.png");
     jaws.assets.add("./assets/art/status_faces.png");
     jaws.assets.add("./assets/art/border_anim.png");
+    jaws.assets.add("./assets/art/medicine_bar.png");
+    jaws.assets.add("./assets/art/medicine_indicator.png");
     
     /* Importing Background assets */
     jaws.assets.add("./assets/art/gate.png");

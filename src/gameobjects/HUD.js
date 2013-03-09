@@ -4,7 +4,7 @@ function HUD(player) {
 	var hudElements = new jaws.SpriteList();
 	
 	hudElements.push( new FaceIndicator(player) );
-	// hudElements.push( new MedicineMeter(player) );
+	hudElements.push( new MedicineMeter(player) );
 	
 	this.update = function() {
 		hudElements.update();
@@ -56,6 +56,7 @@ function FaceIndicator(player) {
 	    	if(this.faceAnimationIndex != 2) {
 	    		this.playerFace.setImage(this.faceAnimation.frames[2]);
 	    	    this.faceAnimationIndex = 2;
+	    	    
 	    	}
 	    }
 	    
@@ -117,15 +118,29 @@ function FaceIndicator(player) {
 
 function MedicineMeter(player) {
 	
-	this.meterSprite  = new jaws.Sprite({image:"./assets/art/medicine_meter.png", anchor:"center", x:675, y:90});
-	this.arrowSprite  = new jaws.Sprite({image:"./assets/art/medicine_arrow.png", anchor:"center", x:675, y:90+10});
+	var MEDICINE_HUD_X = 675;
+	var MEDICINE_HUD_Y = 185;
 	
-	this.draw = function() {
-		this.meterSprite.draw();
-		this.arrowSprite.draw();
-	}
+	this.barSprite       = new jaws.Sprite({image:"./assets/art/medicine_bar.png", anchor:"center", x:MEDICINE_HUD_X, y:MEDICINE_HUD_Y, scale:0.75});
+	this.indicatorSprite = new jaws.Sprite({image:"./assets/art/medicine_indicator.png", anchor: "center_left", x:615.1, y:185, scale:0.75});
+	
+	console.log(this.indicatorSprite.width);
+	this.indicatorSprite.setWidth(0);
 	
 	this.update = function() {
+		// Meter Sprite has an effective drawing width of 122 px (for 100% life),
+		// we must scale it down 1.22 px for every unit change of medicine
+		var new_indicator_sprite_width = (player.medicineLife/100.0)*122; //px
+		this.indicatorSprite.setWidth(new_indicator_sprite_width);						
+	}
+	
+	this.draw = function() {
+		this.indicatorSprite.draw();
+		this.indicatorSprite.rect().draw();
+		this.barSprite.draw();
 		
 	}
+	
 }
+
+

@@ -40,7 +40,7 @@ function PlayState() {
   	tile_map.push(grass_blocks);
   	
   	/* Player setup. */
-  	player = new Player(1000,1000);
+  	player = new Player(500,1000);
   	
     /* Player HUD setup. */
     player_hud = new HUD(player);
@@ -55,7 +55,26 @@ function PlayState() {
 
 	/* Test Medpac setup*/
 	medpacs.push( new Medpac(1000,350) );
-	medpacs.push( new Medpac(500,680) );
+	medpacs.push( new Medpac(1000,350) );
+	medpacs.push( new Medpac(1000,350) );
+	medpacs.push( new Medpac(500,670) );
+	medpacs.push( new Medpac(500,730) );
+	medpacs.push( new Medpac(500,740) );
+	medpacs.push( new Medpac(500,730) );
+	medpacs.push( new Medpac(500,740) );
+	medpacs.push( new Medpac(500,670) );
+	medpacs.push( new Medpac(500,730) );
+	medpacs.push( new Medpac(500,740) );
+	medpacs.push( new Medpac(500,730) );
+	medpacs.push( new Medpac(500,740) );
+	medpacs.push( new Medpac(500,740) );
+	medpacs.push( new Medpac(500,730) );
+	medpacs.push( new Medpac(500,740) );
+	medpacs.push( new Medpac(500,730) );
+	medpacs.push( new Medpac(500,740) );
+	medpacs.push( new Medpac(500,740) );
+	
+	
 	
 	
 	/* ------------------- Boundaries setup. ------------------- */
@@ -292,11 +311,31 @@ function PlayState() {
    
     else if(player.medicineLife > 0) {
        player.medicineLife -= player.diseasePenalty;
+       
     }
    
     else {
        player.life -= player.diseasePenalty;
     }
+    
+    /* Sanity checks: */
+    if(player.medicineLife > 100) {
+    	player.medicineLife = 100;
+    }
+    
+	if(player.medicineLife < 0) {
+		player.medicineLife = 0;
+    }
+    
+    if(player.life > 100) {
+    	player.life = 100;
+    }
+    
+    console.log(player.medicineLife);
+
+
+    
+    
    /* ========================================================= */
   
   
