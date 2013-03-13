@@ -1,4 +1,13 @@
-
+/**
+ * A Building represents a static object which can be collided against,
+ * but which doesn't move. 
+ * @param {Map} properties various properites that affect how the building is instantiated.
+ * 	The Building expects the following properties:
+ * 		properties.type -> a value between 1 and 6, which designates the type of building
+ * 		properties.x -> the x coordinate, anchored by the center
+ * 		properties.y -> the y coordinate, anchored by the center
+ * 
+ */
 function Building(properties) {
     
     this.sprite;
