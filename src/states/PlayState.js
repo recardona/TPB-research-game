@@ -15,6 +15,7 @@ function PlayState() {
   var boundaries  = new jaws.SpriteList();
   var shrubberies = new jaws.SpriteList();
   var medpacs     = new jaws.SpriteList();
+  var other_items  = new jaws.SpriteList();
   var sqrt_nine_halves = Math.sqrt(9/2);
   var width  = 72;
   var height = 54;
@@ -54,25 +55,14 @@ function PlayState() {
 	buildings = setupBuildings();
 
 	/* Test Medpac setup*/
-	medpacs.push( new Medpac(1000,350) );
-	medpacs.push( new Medpac(1000,350) );
-	medpacs.push( new Medpac(1000,350) );
-	medpacs.push( new Medpac(500,670) );
-	medpacs.push( new Medpac(500,730) );
-	medpacs.push( new Medpac(500,740) );
-	medpacs.push( new Medpac(500,730) );
-	medpacs.push( new Medpac(500,740) );
-	medpacs.push( new Medpac(500,670) );
-	medpacs.push( new Medpac(500,730) );
-	medpacs.push( new Medpac(500,740) );
-	medpacs.push( new Medpac(500,730) );
-	medpacs.push( new Medpac(500,740) );
-	medpacs.push( new Medpac(500,740) );
-	medpacs.push( new Medpac(500,730) );
-	medpacs.push( new Medpac(500,740) );
-	medpacs.push( new Medpac(500,730) );
-	medpacs.push( new Medpac(500,740) );
-	medpacs.push( new Medpac(500,740) );
+	// medpacs.push( new Medpac(500,670) );
+	// medpacs.push( new Medpac(500,740) );
+	medpacs.push(new Item({type:"medpac", x:500, y:670}));
+	
+	other_items.push(new Item({type:"bottlecap", x:600, y:670}));
+	other_items.push(new Item({type:"rations", x:600, y:770}));
+	other_items.push(new Item({type:"water", x:500, y:770}));
+	
 	
 	
 	
@@ -295,6 +285,24 @@ function PlayState() {
     }
        
     /* ========================================================= */
+   
+   
+   
+   
+   
+    /* --------- check collisions against all other items --------- */
+    var playerCollidedWithOtherItem = false;
+    var collided_items = jaws.collideOneWithMany(player,other_items);
+    
+    if(collided_items.length > 0) {
+        collided_items.forEach(function(item) {
+            other_items.remove(item);
+        });
+    }
+       
+    /* ========================================================= */
+   
+   
     
     
     
@@ -366,6 +374,7 @@ function PlayState() {
         player.draw();
         lanterns.draw();
         medpacs.draw();
+        other_items.draw();
         boundaries.draw();
 	});
    

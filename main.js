@@ -40,6 +40,9 @@ function init() {
     
     /* Importing Item assets */
     jaws.assets.add("./assets/art/medpac.png");
+    jaws.assets.add("./assets/art/bottlecap.png");
+    jaws.assets.add("./assets/art/rations.png");
+    jaws.assets.add("./assets/art/water.png");
     
 	jaws.start(MenuState);
 	

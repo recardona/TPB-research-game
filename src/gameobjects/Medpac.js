@@ -11,7 +11,7 @@ function Medpac(x,y) {
     this.y = y;
     this.radius = 16; //radius field for collision
     
-    this.sprite = new jaws.Sprite({image: "./assets/art/medpac.png", anchor:"center", x:x, y:y});
+    this.sprite = new jaws.Sprite({image: "./assets/art/medpac.png", anchor:"center", x:x, y:y, scale:0.40});
     
     this.draw = function() {
         this.sprite.draw();
