@@ -8,13 +8,13 @@ function PlayState() {
   var player;
   var player_hud;
   var grass_blocks;
-  var roads       = new jaws.SpriteList();
-  var trees		  = new jaws.SpriteList();
-  var lanterns    = new jaws.SpriteList();
-  var buildings   = new jaws.SpriteList();
-  var boundaries  = new jaws.SpriteList();
-  var shrubberies = new jaws.SpriteList();
-  var medpacs     = new jaws.SpriteList();
+  var roads        = new jaws.SpriteList();
+  var trees		   = new jaws.SpriteList();
+  var lanterns     = new jaws.SpriteList();
+  var buildings    = new jaws.SpriteList();
+  var boundaries   = new jaws.SpriteList();
+  var shrubberies  = new jaws.SpriteList();
+  var medpacs      = new jaws.SpriteList();
   var other_items  = new jaws.SpriteList();
   var sqrt_nine_halves = Math.sqrt(9/2);
   var width  = 72;
@@ -41,12 +41,10 @@ function PlayState() {
   	tile_map.push(grass_blocks);
   	
   	/* Player setup. */
-  	player = new Player(500,1000);
+  	player = new Player(1500,1000);
   	
     /* Player HUD setup. */
     player_hud = new HUD(player);
-    
-    
    
     /* Lantern setup. */ 
     lanterns = setupLanterns();
@@ -54,11 +52,8 @@ function PlayState() {
 	/* Building setup. */
 	buildings = setupBuildings();
 
-	/* Test Medpac setup*/
-	// medpacs.push( new Medpac(500,670) );
-	// medpacs.push( new Medpac(500,740) );
+	/* Initial item setup*/
 	medpacs.push(new Item({type:"medpac", x:500, y:670}));
-	
 	other_items.push(new Item({type:"bottlecap", x:600, y:670}));
 	other_items.push(new Item({type:"rations", x:600, y:770}));
 	other_items.push(new Item({type:"water", x:500, y:770}));
@@ -97,11 +92,7 @@ function PlayState() {
   }
 
 
-  this.update = function() {
-    // console.log("Position: (" + player.sprite.x + ", " + player.sprite.y +")");
-    // console.log("Player life: " + player.life);
-    // console.log("Player medicine life: " + player.medicineLife);  
-    
+  this.update = function() {    
       
   	lanterns.update();
   	player_hud.update();
@@ -112,6 +103,7 @@ function PlayState() {
     var playerCollidedWithBoundary  = false;
     var playerCollidedWithShrubbery = false;
     /* ---- handle input and check for building collisions ----- */
+  
     
     if(jaws.pressed("left"))
     {
@@ -346,6 +338,7 @@ function PlayState() {
     
    /* ========================================================= */
   
+  	jaws.log("Player at x:"+player.sprite.x+", y:"+player.sprite.y);
   
     
     
@@ -369,8 +362,8 @@ function PlayState() {
     viewport.drawTileMap(tile_map);
     
     viewport.apply(function() {
-        roads.draw();
         buildings.draw();
+        roads.draw();
         player.draw();
         lanterns.draw();
         medpacs.draw();
@@ -413,6 +406,12 @@ function PlayState() {
   									   y:(game_height_pixels*.95/2),
   									   angle:90}));
   	}
+  	
+  	for(var yIndex = 0; yIndex < 5; yIndex++) {
+  		roadTiles.push( new jaws.Sprite({image: "./assets/art/driveway.png", 
+  											 x:game_width_pixels*3.335/4,
+  											 y:(game_height_pixels*yIndex/11.2)}));
+  	}
   	  	
   	return roadTiles;
   }
@@ -441,6 +440,7 @@ function PlayState() {
   	
   	buildings.push( new Building({type:1,x:game_width_pixels/4.5,y:game_height_pixels/4}));
 	buildings.push( new Building({type:2,x:game_width_pixels*5/8,y:game_height_pixels*3/8}));
+	buildings.push( new Building({type:3,x:game_width_pixels*3.4/4.5,y:game_height_pixels*1/8}));
 	buildings.push( new Building({type:3,x:game_width_pixels/4.6,y:game_height_pixels*6/8}));
 	buildings.push( new Building({type:4,x:game_width_pixels*4.5/8,y:game_height_pixels*5.9/9}));
 	buildings.push( new Building({type:5,x:game_width_pixels*6.3/8,y:game_height_pixels*6.2/9}));
