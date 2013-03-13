@@ -123,8 +123,6 @@ function MedicineMeter(player) {
 	
 	this.barSprite       = new jaws.Sprite({image:"./assets/art/medicine_bar.png", anchor:"center", x:MEDICINE_HUD_X, y:MEDICINE_HUD_Y, scale:0.75});
 	this.indicatorSprite = new jaws.Sprite({image:"./assets/art/medicine_indicator.png", anchor: "center_left", x:615.1, y:185, scale:0.75});
-	
-	console.log(this.indicatorSprite.width);
 	this.indicatorSprite.setWidth(0);
 	
 	this.update = function() {
@@ -136,7 +134,6 @@ function MedicineMeter(player) {
 	
 	this.draw = function() {
 		this.indicatorSprite.draw();
-		this.indicatorSprite.rect().draw();
 		this.barSprite.draw();
 		
 	}
