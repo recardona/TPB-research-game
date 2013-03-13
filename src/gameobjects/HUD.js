@@ -5,6 +5,7 @@ function HUD(player) {
 	
 	hudElements.push( new FaceIndicator(player) );
 	hudElements.push( new MedicineMeter(player) );
+	hudElements.push( new ItemCounter(player) );
 	
 	this.update = function() {
 		hudElements.update();
@@ -18,6 +19,13 @@ function HUD(player) {
 
 
 
+/**
+ * The FaceIndicator is the HUD Element which conveys Feedback
+ * on the player's current health.  Instead of a direct meter,
+ * Follow the Light! uses stages of player health, which slowly
+ * depict the player becoming a zombie.
+ * @param {Object} player the player we're tracking
+ */
 function FaceIndicator(player) {
 	
 	var FACE_HUD_X = 675;
@@ -116,6 +124,12 @@ function FaceIndicator(player) {
 }
 
 
+/**
+ * The MedicineMeter is the HUD Element which conveys information about
+ * the player's amount of medicine.  Medicine is lost over time and is
+ * gained by picking up medpacs.  
+ * @param {Object} player the player we're tracking
+ */
 function MedicineMeter(player) {
 	
 	var MEDICINE_HUD_X = 675;
@@ -138,6 +152,38 @@ function MedicineMeter(player) {
 		
 	}
 	
+}
+
+function ItemCounter(player) {
+    
+    var ITEM_HUD_X = 540;
+    var ITEM_HUD_Y = 90;
+    
+    this.bottleCapSprite   = new jaws.Sprite({image:"./assets/art/bottlecap.png", anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y-40, scale:0.40});
+    this.foodRationsSprite = new jaws.Sprite({image:"./assets/art/rations.png", anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y, scale:0.40});
+    this.waterBottleSprite = new jaws.Sprite({image:"./assets/art/water.png", anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y+40, scale:0.40});
+    
+    this.update = function() {
+        //do nothing
+    }
+    
+    this.draw = function() {
+        
+        this.bottleCapSprite.draw();
+        this.foodRationsSprite.draw();
+        this.waterBottleSprite.draw();
+        
+        // jaws.context.clearRect(0,0,jaws.width,jaws.height);
+        // title_img.draw();
+        // for(var i=0; items[i]; i++) {
+            // jaws.context.font = "36pt Denk One";
+            // jaws.context.lineWidth = 20;
+            // jaws.context.fillStyle =  (i == index) ? "#E5F361" : "#62625F";
+            // jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
+            // jaws.context.fillText(items[i], jaws.width*3/4, jaws.height*7/8 + i * (50));
+        // } 
+    }
+    
 }
 
 
