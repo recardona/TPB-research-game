@@ -41,9 +41,11 @@ function PlayState() {
   
   this.setup = function() {
   	
-  	/* Background setup. */
-	roads = setupRoadTiles();
+  	/* Map setup. */
   	grass_blocks = setupBackgroundTiles();
+	roads = setupRoadTiles();
+	buildings = setupBuildings();
+	boundaries = setupBoundaries();
   	
   	//the viewport is all the viewable area of a larger tilemap.  It allows scrolling.
   	viewport  = new jaws.Viewport({max_x:width*32, max_y:height*32});
@@ -64,41 +66,13 @@ function PlayState() {
     /* Lantern setup. */ 
     lanterns = setupLanterns();
     
-	/* Building setup. */
-	buildings = setupBuildings();
 
 	/* Initial item setup*/
 	medpacs.push(new Item({type:"medpac", x:500, y:670}));
 	bottlecaps.push(new Item({type:"bottlecap", x:600, y:670}));
 	rations.push(new Item({type:"rations", x:600, y:770}));
 	waters.push(new Item({type:"water", x:500, y:770}));
-	
-
-	
-	/* ------------------- Boundaries setup. ------------------- */
-	var offset = 35;
-	var leftWall = new Building({type:6,x:offset,y:(game_height_pixels/2)});
-	leftWall.sprite.setWidth(game_height_pixels);
-	leftWall.sprite.rotate(90);
-	
-	
-	var rightWall = new Building({type:6,x:(game_width_pixels-offset),y:(game_height_pixels/2)});
-	rightWall.sprite.setWidth(game_height_pixels);
-	rightWall.sprite.rotate(90);
-	
-	var topWall = new Building({type:6,x:(game_width_pixels/2),y:(offset)});
-	topWall.sprite.setWidth(game_width_pixels);
-	
-	var bottomWall = new Building({type:6,x:(game_width_pixels/2),y:(game_height_pixels-offset)});
-	bottomWall.sprite.setWidth(game_width_pixels);
-	
-	boundaries.push(leftWall);
-	boundaries.push(rightWall);
-	boundaries.push(topWall);
-	boundaries.push(bottomWall);
-	/* ========================================================= */
-	
-	
+		
 	
 	jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
@@ -500,6 +474,35 @@ function PlayState() {
 	
 	return buildings;
   }
+  
+  
+  function setupBoundaries() {
+  	var boundaries = new jaws.SpriteList();
+  	
+  	var offset = 35;
+	var leftWall = new Building({type:6,x:offset,y:(game_height_pixels/2)});
+	leftWall.sprite.setWidth(game_height_pixels);
+	leftWall.sprite.rotate(90);
+	
+	
+	var rightWall = new Building({type:6,x:(game_width_pixels-offset),y:(game_height_pixels/2)});
+	rightWall.sprite.setWidth(game_height_pixels);
+	rightWall.sprite.rotate(90);
+	
+	var topWall = new Building({type:6,x:(game_width_pixels/2),y:(offset)});
+	topWall.sprite.setWidth(game_width_pixels);
+	
+	var bottomWall = new Building({type:6,x:(game_width_pixels/2),y:(game_height_pixels-offset)});
+	bottomWall.sprite.setWidth(game_width_pixels);
+	
+	boundaries.push(leftWall);
+	boundaries.push(rightWall);
+	boundaries.push(topWall);
+	boundaries.push(bottomWall);
+	
+	return boundaries;
+  }
+  
   /* ========================================================= */
 
 
