@@ -159,19 +159,58 @@ function ItemCounter(player) {
     var ITEM_HUD_X = 540;
     var ITEM_HUD_Y = 90;
     
-    this.bottleCapSprite   = new jaws.Sprite({image:"./assets/art/bottlecap.png", anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y-40, scale:0.40});
-    this.foodRationsSprite = new jaws.Sprite({image:"./assets/art/rations.png", anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y, scale:0.40});
-    this.waterBottleSprite = new jaws.Sprite({image:"./assets/art/water.png", anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y+40, scale:0.40});
+    this.bottlecapAnimation = new jaws.Animation({sprite_sheet: "./assets/art/bottlecap_anim.png", frame_size:[104,104], loop:true});
+    var bottlecaps_counter  = 0;
+    this.bottlecapSprite    = new jaws.Sprite({anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y-40, scale:0.40});
+    this.bottlecapSprite.setImage(this.bottlecapAnimation.next());
+
+    this.rationsAnimation = new jaws.Animation({sprite_sheet: "./assets/art/rations_anim.png", frame_size:[104,104], loop:true});
+    var rations_counter   = 0;
+    this.rationsSprite    = new jaws.Sprite({anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y, scale:0.40});
+    this.rationsSprite.setImage(this.rationsAnimation.next());
+    
+    this.watersAnimation = new jaws.Animation({sprite_sheet: "./assets/art/water_anim.png", frame_size:[104,104], loop:true});
+    var waters_counter   = 0;
+    this.watersSprite    = new jaws.Sprite({anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y+40, scale:0.40});
+    this.watersSprite.setImage(this.watersAnimation.next());
+    
     
     this.update = function() {
-        //do nothing
+        
+        if(player.numberOfBottlecapsCollected != bottlecaps_counter) {
+        	bottlecaps_counter = player.numberOfBottlecapsCollected;
+        	this.bottlecapSprite.setImage(this.bottlecapAnimation.next());
+        	
+        	var bcSprite = this.bottlecapSprite; //keep references for anon. function
+        	var bcAnim   = this.bottlecapAnimation;
+        	setTimeout(function(){bcSprite.setImage(bcAnim.next());},500);	        	
+        }
+
+        if(player.numberOfRationsCollected != rations_counter) {
+        	rations_counter = player.numberOfRationsCollected;
+        	this.rationsSprite.setImage(this.rationsAnimation.next());
+        	
+        	var rSprite = this.rationsSprite; //keep references for anon. function
+        	var rAnim   = this.rationsAnimation;
+        	setTimeout(function(){rSprite.setImage(rAnim.next());}, 500);
+        }
+        
+        if(player.numberOfWatersCollected != waters_counter) {
+        	waters_counter = player.numberOfWatersCollected;
+        	this.watersSprite.setImage(this.watersAnimation.next());
+        	
+        	var wSprite = this.watersSprite; //keep references for anon. function
+        	var wAnim   = this.watersAnimation; 
+        	setTimeout(function(){wSprite.setImage(wAnim.next());}, 500);
+        }
+        
     }
     
     this.draw = function() {
         
-        this.bottleCapSprite.draw();
-        this.foodRationsSprite.draw();
-        this.waterBottleSprite.draw();
+        this.bottlecapSprite.draw();
+        this.rationsSprite.draw();
+        this.watersSprite.draw();
         
         // jaws.context.clearRect(0,0,jaws.width,jaws.height);
         // title_img.draw();

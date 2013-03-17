@@ -8,21 +8,36 @@ function PlayState() {
   var player;
   var player_hud;
   var grass_blocks;
-  var roads        = new jaws.SpriteList();
-  var trees		   = new jaws.SpriteList();
-  var lanterns     = new jaws.SpriteList();
-  var buildings    = new jaws.SpriteList();
-  var boundaries   = new jaws.SpriteList();
-  var shrubberies  = new jaws.SpriteList();
-  var medpacs      = new jaws.SpriteList();
-  var other_items  = new jaws.SpriteList();
+  var roads       = new jaws.SpriteList();
+  var trees		  = new jaws.SpriteList();
+  var lanterns    = new jaws.SpriteList();
+  var buildings   = new jaws.SpriteList();
+  var boundaries  = new jaws.SpriteList();
+  var shrubberies = new jaws.SpriteList();
+  var medpacs     = new jaws.SpriteList();
+  
+  var bottlecaps  = new jaws.SpriteList();
+  var rations     = new jaws.SpriteList();
+  var waters      = new jaws.SpriteList();
+  
   var sqrt_nine_halves = Math.sqrt(9/2);
+  
+  
   var width  = 72;
   var height = 54;
   var game_width_pixels  = width*32;
   var game_height_pixels = height*32;
   var viewport;
   var tile_map;
+  
+  /* Game status flags */
+  var playerDidCollide = false;
+  var playerCollidedWithBuilding  = false;
+  var playerCollidedWithLantern   = false;
+  var playerCollidedWithBoundary  = false;
+  var playerCollidedWithShrubbery = false;
+
+ 
   
   this.setup = function() {
   	
@@ -41,7 +56,7 @@ function PlayState() {
   	tile_map.push(grass_blocks);
   	
   	/* Player setup. */
-  	player = new Player(1500,1000);
+  	player = new Player(500,1000);
   	
     /* Player HUD setup. */
     player_hud = new HUD(player);
@@ -54,13 +69,11 @@ function PlayState() {
 
 	/* Initial item setup*/
 	medpacs.push(new Item({type:"medpac", x:500, y:670}));
-	other_items.push(new Item({type:"bottlecap", x:600, y:670}));
-	other_items.push(new Item({type:"rations", x:600, y:770}));
-	other_items.push(new Item({type:"water", x:500, y:770}));
+	bottlecaps.push(new Item({type:"bottlecap", x:600, y:670}));
+	rations.push(new Item({type:"rations", x:600, y:770}));
+	waters.push(new Item({type:"water", x:500, y:770}));
 	
-	
-	
-	
+
 	
 	/* ------------------- Boundaries setup. ------------------- */
 	var offset = 35;
@@ -95,16 +108,10 @@ function PlayState() {
   this.update = function() {    
       
   	lanterns.update();
-  	player_hud.update();
+  	player_hud.update();    
     
-    var playerDidCollide = false;
-    var playerCollidedWithBuilding  = false;
-    var playerCollidedWithLantern   = false;
-    var playerCollidedWithBoundary  = false;
-    var playerCollidedWithShrubbery = false;
     /* ---- handle input and check for building collisions ----- */
-  
-    
+
     if(jaws.pressed("left"))
     {
 		var delta_x = 0;
@@ -282,17 +289,66 @@ function PlayState() {
    
    
    
+   
+   
     /* --------- check collisions against all other items --------- */
-    var playerCollidedWithOtherItem = false;
-    var collided_items = jaws.collideOneWithMany(player,other_items);
+    // var playerCollidedWithOtherItem = false;
+    // var collided_items = jaws.collideOneWithMany(player,other_items);
     
-    if(collided_items.length > 0) {
-        collided_items.forEach(function(item) {
-            other_items.remove(item);
+    // if(collided_items.length > 0) {
+        // collided_items.forEach(function(item) {
+            // other_items.remove(item);
+        // });
+    // }      
+    /* ========================================================= */
+
+
+
+    /* --------- check collisions against bottlecaps --------- */
+    
+    var collided_bcaps = jaws.collideOneWithMany(player,bottlecaps);
+    
+    if(collided_bcaps.length > 0) {
+        collided_bcaps.forEach(function(item) {
+            bottlecaps.remove(item);
+            player.numberOfBottlecapsCollected++;
         });
     }
        
     /* ========================================================= */
+ 
+ 
+ 
+    /* --------- check collisions against rations --------- */
+    
+    var collided_rations = jaws.collideOneWithMany(player,rations);
+    
+    if(collided_rations.length > 0) {
+        collided_rations.forEach(function(item) {
+            rations.remove(item);
+            player.numberOfRationsCollected++;
+        });
+    }
+       
+    /* ========================================================= */
+   
+   
+   
+	/* --------- check collisions against waters --------- */
+    
+    var collided_waters = jaws.collideOneWithMany(player,waters);
+    
+    if(collided_waters.length > 0) {
+        collided_waters.forEach(function(item) {
+            waters.remove(item);
+            player.numberOfWatersCollected++;
+        });
+    }
+       
+    /* ========================================================= */
+
+  
+   
    
    
     
@@ -347,12 +403,7 @@ function PlayState() {
     forceInsideCanvas(player.sprite)
     // bullets.removeIf(isOutsideCanvas) // delete items for which isOutsideCanvas(item) is true
     
-    fps.innerHTML    = jaws.game_loop.fps
-    
-    /* reset flags */
-    playerDidCollide = false;
-    playerCollidedWithLantern = false;
-    playerCollidedWithBuilding = false;
+    fps.innerHTML    = jaws.game_loop.fps    
   }
 
 
@@ -367,7 +418,9 @@ function PlayState() {
         player.draw();
         lanterns.draw();
         medpacs.draw();
-        other_items.draw();
+        bottlecaps.draw();
+        rations.draw();
+        waters.draw();
         boundaries.draw();
 	});
    
@@ -462,6 +515,11 @@ function PlayState() {
     if(item.x + item.width > game_width_pixels)     { item.x = game_width_pixels - item.width; }
     if(item.y - item.height < 0)                    { item.y = 0 + item.height; }
     if(item.y + item.height  > game_height_pixels)  { item.y = game_height_pixels - item.height; }
+  }
+  
+  
+  function resetCollisionFlags() {
+  	
   }
 
 }

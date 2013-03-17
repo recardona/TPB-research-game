@@ -43,6 +43,9 @@ function init() {
     jaws.assets.add("./assets/art/bottlecap.png");
     jaws.assets.add("./assets/art/rations.png");
     jaws.assets.add("./assets/art/water.png");
+    jaws.assets.add("./assets/art/bottlecap_anim.png");
+    jaws.assets.add("./assets/art/rations_anim.png");
+    jaws.assets.add("./assets/art/water_anim.png");
     
 	jaws.start(MenuState);
 	

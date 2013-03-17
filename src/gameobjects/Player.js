@@ -18,6 +18,10 @@ function Player(x,y) {
     this.life = 100;
     this.medicineLife   = 0.0;
     this.diseasePenalty = 0.1;
+    this.numberOfWatersCollected     = 0;
+    this.numberOfRationsCollected    = 0;
+    this.numberOfBottlecapsCollected = 0;
+    
     
     
     this.draw = function() {
