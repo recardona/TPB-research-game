@@ -20,7 +20,7 @@ function PlayState() {
   var rations     = new jaws.SpriteList();
   var waters      = new jaws.SpriteList();
   
-  var sqrt_nine_halves = Math.sqrt(9/2);
+  var sqrt_nine_halves = 3*Math.SQRT1_2;
   
   
   var width  = 72;
