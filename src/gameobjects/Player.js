@@ -13,6 +13,8 @@ function Player(x,y) {
     this.sprite.setImage(this.anim_walk_right.next());
     this.radius = 16; //px - this radius is made available for circle-based collision
     this.facingHorizontally = true;
+    this.x = this.sprite.x;
+    this.y = this.sprite.y;
     
     //Game logic attributes
     this.life = 100;
@@ -22,14 +24,52 @@ function Player(x,y) {
     this.numberOfRationsCollected    = 0;
     this.numberOfBottlecapsCollected = 0;
     
-    
+    this.update = function() {
+    	this.x = this.sprite.x; //refresh the info
+    	this.y = this.sprite.y;
+    }
     
     this.draw = function() {
         this.sprite.draw();
-        // this.sprite.rect().move(32,32).resizeTo(32,32).draw(); //DO NOT DELETE: Useful for debugging
     }
     
     this.rect = function() {
         return this.sprite.rect().move(32,32).resizeTo(32,32);
-    }    
+    }
+    
+    this.applyDamage = function(inLantern) {
+    	if(this.medicineLife > 75.0 && inLantern) {
+    		this.life -= this.diseasePenalty;
+    	}
+    	
+    	else if(this.medicineLife > 0.0) {
+    		this.medicineLife -= this.diseasePenalty;
+    	}
+    	
+    	else {
+    		this.life -= this.diseasePenalty;
+    	}
+    	
+    	bound_health_stats(this);
+    }
+    
+      
+    /**
+     * Forces the 'player' to have reasonable life values.
+     * @param {Object} player the player to bound the life of
+     */
+    function bound_health_stats(player) {
+    	if(player.medicineLife > 100) {
+    		player.medicineLife = 100;
+  		}
+  		
+  		if(player.medicineLife < 0) {
+  			player.medicineLife = 0;
+    	}
+    
+    	if(player.life > 100) {
+    		player.life = 100;
+    	}
+    }
+    
 }

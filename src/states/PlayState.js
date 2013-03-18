@@ -40,7 +40,7 @@ function PlayState() {
   var playerCollidedWithBuilding  = false;
   var playerCollidedWithShrubbery = false;
   var playerCollidedWithLantern   = false;
-  var playerCollidedWithLanternPost = false;
+  var playerInLanternLight = false;
   var playerLost  = false;
  
   
@@ -69,67 +69,46 @@ function PlayState() {
     /* Player HUD setup. */
     player_hud = new HUD(player);
        
-
 	/* Initial item setup*/
 	medpacs.push(new Item({type:"medpac", x:500, y:670}));
 	bottlecaps.push(new Item({type:"bottlecap", x:600, y:670}));
 	rations.push(new Item({type:"rations", x:600, y:770}));
 	waters.push(new Item({type:"water", x:500, y:770}));
 		
-	
 	jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
   }
 
 
-  this.update = function() {    
-      
+  this.update = function() {
   	lanterns.update();
   	player_hud.update();    
+  	player.update();
     
     /* ---- handle input and check for building collisions ----- */
+    var delta_x = 0;
+    var delta_y = 0;
 
     if(jaws.pressed("left"))
     {
-		var delta_x = 0;
     	if(jaws.pressed("up") || jaws.pressed("down")) {
-    		delta_x = sqrt_nine_halves; 
-    		// I have to move 3 diagonally, so each of the components(x and y)
-    		// have to be identical, and both less than 3.  diagonal_delta = 3, so:
-    		// 3^2 = x^2 + y^2 => 9 = 2*x^2 => sqrt(9/2) = x 
+    		delta_x = -sqrt_nine_halves; 
+    		// diagonal_delta = 3, so: 3^2 = x^2 + y^2 => 9 = 2*x^2 => sqrt(9/2) = x 
     	}
     	else {
-    		delta_x = 3;
+    		delta_x = -3;
     	}
     	
-        player.sprite.x -= delta_x;
+        player.sprite.x += delta_x;
         player.facingHorizontally = true;
-        
-        //if the player collided, revert the move
-  		buildings.forEach(function(building,index,array) {
-  			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
-	            player.sprite.x += delta_x;
-	            playerCollidedWithBuilding = true;
-  			}
-  		});
-  		
-		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
-        	player.sprite.x += delta_x;
-        	playerCollidedWithLantern = true;
-        }
-
-            	 
     	player.sprite.setImage(player.anim_walk_left.next());
     }
     
     else if(jaws.pressed("right")) 
     { 
-    	var delta_x = 0;
     	if(jaws.pressed("up") || jaws.pressed("down")) {
     		delta_x = sqrt_nine_halves; 
-    		// I have to move 3 diagonally, so each of the components(x and y)
-    		// have to be identical, and both less than 3.  diagonal_delta = 3, so:
-    		// 3^2 = x^2 + y^2 => 9 = 2*x^2 => sqrt(9/2) = x 
+    		// diagonal_delta = 3, so: 3^2 = x^2 + y^2 => 9 = 2*x^2 => sqrt(9/2) = x 
     	}
     	else {
     		delta_x = 3;
@@ -137,175 +116,113 @@ function PlayState() {
 
         player.sprite.x += delta_x;
         player.facingHorizontally = true;
-        
-        //if the player collided, revert the move
-		buildings.forEach(function(building,index,array) {
-  			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
-	            player.sprite.x -= delta_x;
-	            playerCollidedWithBuilding = true;
-  			}
-  		});
-        
-		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
-        	player.sprite.x -= delta_x;
-        	playerCollidedWithLantern = true;
-        }
-
     	player.sprite.setImage(player.anim_walk_right.next());
     }
     
     
     if(jaws.pressed("up"))    
     {
-    	var delta_y = 0;
     	if(jaws.pressed("left") || jaws.pressed("right")) {
-    		delta_y = sqrt_nine_halves; 
-    		// I have to move 3 diagonally, so each of the components(x and y)
-    		// have to be identical, and both less than 3.  diagonal_delta = 3, so:
-    		// 3^2 = x^2 + y^2 => 9 = 2*y^2 => sqrt(9/2) = y 
+    		delta_y = -sqrt_nine_halves; 
+			// diagonal_delta = 3, so: 3^2 = x^2 + y^2 => 9 = 2*y^2 => sqrt(9/2) = y 
     	}
     	else {
-    		delta_y = 3;
+    		delta_y = -3;
     	}
     	    	
-        player.sprite.y -= delta_y;
+        player.sprite.y += delta_y;
         player.facingHorizontally = false;
-        
-        //if the player collided, revert the move
-		buildings.forEach(function(building,index,array) {
-  			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
-	            player.sprite.y += delta_y;
-	            playerCollidedWithBuilding = true;
-  			}
-  		});
-        
-		if(jaws.collideOneWithMany(player,lanterns).length > 0) {
-        	player.sprite.y += delta_y;
-        	playerCollidedWithLantern = true;
-        }
-    	
     	player.sprite.setImage(player.anim_walk_up.next()); 
     }
     
     
     else if(jaws.pressed("down"))  
     { 
-		var delta_y = 0;
     	if(jaws.pressed("left") || jaws.pressed("right")) {
     		delta_y = sqrt_nine_halves; 
-    		// I have to move 3 diagonally, so each of the components(x and y)
-    		// have to be identical, and both less than 3.  diagonal_delta = 3, so:
-    		// 3^2 = x^2 + y^2 => 9 = 2*y^2 => sqrt(9/2) = y 
+    		// diagonal_delta = 3, so: 3^2 = x^2 + y^2 => 9 = 2*y^2 => sqrt(9/2) = y 
     	}
     	else {
     		delta_y = 3;
     	}
-
     	
         player.sprite.y += delta_y;
         player.facingHorizontally = false;
-        
-        //if the player collided, revert the move
-		buildings.forEach(function(building,index,array) {
-  			if(jaws.collideOneWithMany(player, building.colliders).length > 0) {
-	            player.sprite.y -= delta_y;
-	            playerCollidedWithBuilding = true;
-  			}
-  		});
-        
-        if(jaws.collideOneWithMany(player,lanterns).length > 0) {
-        	player.sprite.y -= delta_y;
-        	playerCollidedWithLantern = true;
-        }
-
     	player.sprite.setImage(player.anim_walk_down.next());
     }
-    /* ========================================================= */
+    /* ===================================================================== */    
     
-
+    //if the player collided with buildings, revert the move
+    buildings.forEach(function(building, index, array) {
+    	if(jaws.collideOneWithMany(player,building.colliders).length > 0) {
+    		player.sprite.x -= delta_x;
+    		player.sprite.y -= delta_y;
+    		playerCollidedWithBuilding = true;
+    	}
+    }); 
     
-    /* --------- check collisions against all lanterns --------- */
+    //if the player collided with a lamppost, revert the move
+    lanterns.forEach(function(lantern, index, array) {
+    	if(jaws.collideOneWithOne(player, lantern.post)) {
+    		player.sprite.x -= delta_x;
+    		player.sprite.y -= delta_y;
+    		playerCollidedWithLantern = true;
+    	}
+    });
     
-    if(jaws.collideOneWithMany(player,lanterns).length > 0) {
-        player.diseasePenalty = 0.001; //while inside, the disease acts slower...
-        playerCollidedWithLantern = true;
+    
+    player.diseasePenalty = 0.01; //re-assign this, just to reset
+            
+    var lanternElem = null;
+    for(var lanternIndex = 0; lanternIndex < lanterns.length; lanternIndex++) {
+    	lanternElem = lanterns.at(lanternIndex);
+    	
+    	if(jaws.collideCircles(player,lanternElem)) {
+    		playerInLanternLight = true;
+    		alert("in light!");
+    		    		
+    		//while inside the light, the disease acts slower...
+    		player.diseasePenalty = 0.001;
+    		
+    		//...unless you have too much medicine, in which cast it acts faster!
+    		if(player.medicineLife > 75) {
+    			player.diseasePenalty = 0.1; 
+    		}
+    		
+    		break; // I only need to know if I collided against one lantern
+    	}
+    }
         
-        if(player.medicineLife > 75) {
-            //...unless you have too much medicine, in which case it acts faster!
-            player.diseasePenalty = 0.1; // X_X
-        }
-    }
-    
-    else {
-        player.diseasePenalty = 0.01; //if not, the disease resumes its course >_<
-    }
-    /* ========================================================= */
+    playerCollidedWithMedpac    = check_collided_and_remove(player,medpacs);
+    playerCollidedWithBottlecap = check_collided_and_remove(player,bottlecaps);
+    playerCollidedWithRations   = check_collided_and_remove(player,rations);
+    playerCollidedWithWaters    = check_collided_and_remove(player,waters);
    
-   
-   
-   playerCollidedWithMedpac    = check_collided_and_remove(player,medpacs);
-   playerCollidedWithBottlecap = check_collided_and_remove(player,bottlecaps);
-   playerCollidedWithRations   = check_collided_and_remove(player,rations);
-   playerCollidedWithWaters    = check_collided_and_remove(player,waters);
-   
-   if(playerCollidedWithMedpac) {player.medicineLife += 10;}
-   if(playerCollidedWithBottlecap) {player.numberOfBottlecapsCollected++;}
-   if(playerCollidedWithRations) {player.numberOfRationsCollected++;}
-   if(playerCollidedWithWaters) {player.numberOfWatersCollected++;}
-   
-    
- 
-  
-   
-   
-   
-    
-    
-    
-    
-    
-    /* set collision flags */
-    playerDidCollide = (playerCollidedWithLantern || playerCollidedWithBuilding);
-    
-    
-    /* ------------- do player damage calculations ------------- */
-    if(player.medicineLife > 75 && playerCollidedWithLantern) {
-       player.life -= player.diseasePenalty;
-    }
-   
-    else if(player.medicineLife > 0) {
-       player.medicineLife -= player.diseasePenalty;
+    if(playerCollidedWithMedpac) {player.medicineLife += 10;}
+    if(playerCollidedWithBottlecap) {player.numberOfBottlecapsCollected++;}
+    if(playerCollidedWithRations) {player.numberOfRationsCollected++;}
+    if(playerCollidedWithWaters) {player.numberOfWatersCollected++;}
        
-    }
-   
-    else {
-       player.life -= player.diseasePenalty;
-    }
+       
+    /* Set general collision flag */
+    playerDidCollide = (playerCollidedWithMedpac || playerCollidedWithBottlecap || 
+    	playerCollidedWithRations || playerCollidedWithWaters || playerCollidedWithBoundary || 
+    	playerCollidedWithBuilding || playerCollidedWithShrubbery || playerCollidedWithLantern || 
+    	playerInLanternLight);
+      
+      
     
-    /* Sanity checks: */
-    if(player.medicineLife > 100) {
-    	player.medicineLife = 100;
-    }
-    
-	if(player.medicineLife < 0) {
-		player.medicineLife = 0;
-    }
-    
-    if(player.life > 100) {
-    	player.life = 100;
-    }
-    
-    console.log(player.medicineLife);
-
-
-    
-    
-   //Logging:  
-  	jaws.log("Player at x:"+player.sprite.x+", y:"+player.sprite.y);
-    
+    player.applyDamage(playerInLanternLight);
+    reset_event_flags();    
+       
+    // Final checks:
     viewport.centerAround(player.sprite);
-    force_inside_canvas(player.sprite)    
-    fps.innerHTML    = jaws.game_loop.fps    
+    force_inside_canvas(player.sprite);
+    fps.innerHTML = jaws.game_loop.fps
+    
+	//Logging:
+    jaws.log("Player at x:"+player.sprite.x+", y:"+player.sprite.y);
+    
   }
 
 
@@ -334,7 +251,7 @@ function PlayState() {
   /**
    * Reset all event flags associated with collision detection.
    */
-  this.resetCollideEventFlags = function(){
+  function reset_event_flags() {
   	playerDidCollide = false;
   	playerCollidedWithMedpac    = false;
   	playerCollidedWithBottlecap = false;
@@ -344,7 +261,7 @@ function PlayState() {
   	playerCollidedWithBuilding  = false;
   	playerCollidedWithShrubbery = false;
   	playerCollidedWithLantern   = false;
-  	playerCollidedWithLanternPost = false;
+  	playerInLanternLight = false;
   }
   
   
