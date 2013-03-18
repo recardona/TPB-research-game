@@ -333,7 +333,7 @@ function PlayState() {
 
   /**
    * Reset all event flags associated with collision detection.
-   */  
+   */
   this.resetCollideEventFlags = function(){
   	playerDidCollide = false;
   	playerCollidedWithMedpac    = false;
@@ -346,9 +346,57 @@ function PlayState() {
   	playerCollidedWithLantern   = false;
   	playerCollidedWithLanternPost = false;
   }
+  
+  
+  /** 
+   * Tests whether or not 'item' is outside the game's canvas.
+   * @param {Object} item an object that has a coordinate
+   * @return True if the object is outside the canvas
+   */
+  function is_outside_canvas(item) { 
+    return (item.x < 0 || item.y < 0 || item.x > game_width_pixels || item.y > game_height_pixels); 
+  }
+    
+  
+  /**
+   * Forces an 'item' inside the canvas by placing it at the canvas' border
+   * when it tries to escape.
+   * @param {Object} item an object that has a coordinate
+   */
+  function force_inside_canvas(item) {
+    if(item.x - item.width < 0)                     { item.x = 0 + item.width;  }
+    if(item.x + item.width > game_width_pixels)     { item.x = game_width_pixels - item.width; }
+    if(item.y - item.height < 0)                    { item.y = 0 + item.height; }
+    if(item.y + item.height  > game_height_pixels)  { item.y = game_height_pixels - item.height; }
+  }
+  
+  
+  /**
+   * Check if there was a collision between a single object 'object' and the 
+   * objects of list 'list'.  If there was, return true and remove the
+   * collided objects from 'list'; return false otherwise.
+   * @param {Object} object an object that can be collided against
+   * @param {List} list a list of objects that can be collided against
+   * @return true if the object collided against anything in the list  
+   */
+  function check_collided_and_remove(object, list) {
+  
+  	var collided_objects = jaws.collideOneWithMany(object, list);
+  	
+  	if(collided_objects.length > 0) {
+  		collided_objects.forEach(function(item){
+  			list.remove(item);
+  		});
+  		return true;
+  	}
+  	
+  	else {
+  		return false;
+  	}
+  }
  
   
-  /* ------------- Auxiliary Setup Functions ------------- */
+  /* -------------------- Auxiliary Setup Functions -------------------- */
   function setup_background_tiles() {
     var backgroundTiles = new jaws.SpriteList();
     
@@ -447,46 +495,5 @@ function PlayState() {
 	return boundaries;
   }
   
-  /* ========================================================= */
-
-
-  /* Simular to example1 but now we're using jaws properties to get width and height of canvas instead */
-  /* This mainly since we let jaws handle the canvas now */
-  function is_outside_canvas(item) { 
-    return (item.x < 0 || item.y < 0 || item.x > game_width_pixels || item.y > game_height_pixels); 
-  }
-    
-    
-  function force_inside_canvas(item) {
-    if(item.x - item.width < 0)                     { item.x = 0 + item.width;  }
-    if(item.x + item.width > game_width_pixels)     { item.x = game_width_pixels - item.width; }
-    if(item.y - item.height < 0)                    { item.y = 0 + item.height; }
-    if(item.y + item.height  > game_height_pixels)  { item.y = game_height_pixels - item.height; }
-  }
-  
-  
-   /**
-   * Check if there was a collision between a single object 'object' and the 
-   * objects of list 'list'.  If there was, return true and remove the
-   * collided objects from 'list'; return false otherwise.
-   * @param {Object} object an object that can be collided against
-   * @param {List} list a list of objects that can be collided against
-   * @return true if the object collided against anything in the list  
-   */
-  function check_collided_and_remove(object, list) {
-  
-  	var collided_objects = jaws.collideOneWithMany(object, list);
-  	
-  	if(collided_objects.length > 0) {
-  		collided_objects.forEach(function(item){
-  			list.remove(item);
-  		});
-  		return true;
-  	}
-  	
-  	else {
-  		return false;
-  	}
-  }
 }
 
