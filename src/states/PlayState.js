@@ -161,26 +161,21 @@ function PlayState() {
     	}
     }); 
     
-    //if the player collided with a lamppost, revert the move
+
+    player.diseasePenalty = 0.01; //re-assign this, just to reset
     lanterns.forEach(function(lantern, index, array) {
+
+    	//if the player collided with a lamppost, revert the move
     	if(jaws.collideOneWithOne(player, lantern.post)) {
     		player.sprite.x -= delta_x;
     		player.sprite.y -= delta_y;
     		playerCollidedWithLantern = true;
     	}
-    });
-    
-    
-    player.diseasePenalty = 0.01; //re-assign this, just to reset
-            
-    var lanternElem = null;
-    for(var lanternIndex = 0; lanternIndex < lanterns.length; lanternIndex++) {
-    	lanternElem = lanterns.at(lanternIndex);
     	
-    	if(jaws.collideCircles(player,lanternElem)) {
+    	// also check for presence within light
+    	if(jaws.collideCircles(player, lantern)) {
     		playerInLanternLight = true;
-    		alert("in light!");
-    		    		
+    		
     		//while inside the light, the disease acts slower...
     		player.diseasePenalty = 0.001;
     		
@@ -188,10 +183,9 @@ function PlayState() {
     		if(player.medicineLife > 75) {
     			player.diseasePenalty = 0.1; 
     		}
-    		
-    		break; // I only need to know if I collided against one lantern
     	}
-    }
+    });
+    
         
     playerCollidedWithMedpac    = check_collided_and_remove(player,medpacs);
     playerCollidedWithBottlecap = check_collided_and_remove(player,bottlecaps);
@@ -209,8 +203,6 @@ function PlayState() {
     	playerCollidedWithRations || playerCollidedWithWaters || playerCollidedWithBoundary || 
     	playerCollidedWithBuilding || playerCollidedWithShrubbery || playerCollidedWithLantern || 
     	playerInLanternLight);
-      
-      
     
     player.applyDamage(playerInLanternLight);
     reset_event_flags();    
