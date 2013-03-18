@@ -30,22 +30,28 @@ function PlayState() {
   var viewport;
   var tile_map;
   
-  /* Game status flags */
+  /* Game event flags */
   var playerDidCollide = false;
-  var playerCollidedWithBuilding  = false;
-  var playerCollidedWithLantern   = false;
+  var playerCollidedWithMedpac    = false;
+  var playerCollidedWithBottlecap = false;
+  var playerCollidedWithRations   = false;
+  var playerCollidedWithWaters    = false;
   var playerCollidedWithBoundary  = false;
+  var playerCollidedWithBuilding  = false;
   var playerCollidedWithShrubbery = false;
-
+  var playerCollidedWithLantern   = false;
+  var playerCollidedWithLanternPost = false;
+  var playerLost  = false;
  
   
   this.setup = function() {
   	
   	/* Map setup. */
-  	grass_blocks = setupBackgroundTiles();
-	roads = setupRoadTiles();
-	buildings = setupBuildings();
-	boundaries = setupBoundaries();
+  	grass_blocks = setup_background_tiles();
+	roads      = setup_road_tiles();
+	buildings  = setup_buildings();
+	boundaries = setup_boundaries();
+	lanterns   = setup_lanterns();
   	
   	//the viewport is all the viewable area of a larger tilemap.  It allows scrolling.
   	viewport  = new jaws.Viewport({max_x:width*32, max_y:height*32});
@@ -62,10 +68,7 @@ function PlayState() {
   	
     /* Player HUD setup. */
     player_hud = new HUD(player);
-   
-    /* Lantern setup. */ 
-    lanterns = setupLanterns();
-    
+       
 
 	/* Initial item setup*/
 	medpacs.push(new Item({type:"medpac", x:500, y:670}));
@@ -219,9 +222,6 @@ function PlayState() {
     }
     /* ========================================================= */
     
-    
-
-
 
     
     /* --------- check collisions against all lanterns --------- */
@@ -243,84 +243,18 @@ function PlayState() {
    
    
    
-    
-    
-    
-    /* --------- check collisions against all medpacs --------- */
-    var playerCollidedWithMedpac = false;
-    var collided_medpacs = jaws.collideOneWithMany(player,medpacs);
-    
-    if(collided_medpacs.length > 0) {
-        collided_medpacs.forEach(function(medpac) {
-            medpacs.remove(medpac);
-            player.medicineLife += 10;
-        });
-    }
-       
-    /* ========================================================= */
+   playerCollidedWithMedpac    = check_collided_and_remove(player,medpacs);
+   playerCollidedWithBottlecap = check_collided_and_remove(player,bottlecaps);
+   playerCollidedWithRations   = check_collided_and_remove(player,rations);
+   playerCollidedWithWaters    = check_collided_and_remove(player,waters);
    
+   if(playerCollidedWithMedpac) {player.medicineLife += 10;}
+   if(playerCollidedWithBottlecap) {player.numberOfBottlecapsCollected++;}
+   if(playerCollidedWithRations) {player.numberOfRationsCollected++;}
+   if(playerCollidedWithWaters) {player.numberOfWatersCollected++;}
    
-   
-   
-   
-   
-   
-    /* --------- check collisions against all other items --------- */
-    // var playerCollidedWithOtherItem = false;
-    // var collided_items = jaws.collideOneWithMany(player,other_items);
     
-    // if(collided_items.length > 0) {
-        // collided_items.forEach(function(item) {
-            // other_items.remove(item);
-        // });
-    // }      
-    /* ========================================================= */
-
-
-
-    /* --------- check collisions against bottlecaps --------- */
-    
-    var collided_bcaps = jaws.collideOneWithMany(player,bottlecaps);
-    
-    if(collided_bcaps.length > 0) {
-        collided_bcaps.forEach(function(item) {
-            bottlecaps.remove(item);
-            player.numberOfBottlecapsCollected++;
-        });
-    }
-       
-    /* ========================================================= */
  
- 
- 
-    /* --------- check collisions against rations --------- */
-    
-    var collided_rations = jaws.collideOneWithMany(player,rations);
-    
-    if(collided_rations.length > 0) {
-        collided_rations.forEach(function(item) {
-            rations.remove(item);
-            player.numberOfRationsCollected++;
-        });
-    }
-       
-    /* ========================================================= */
-   
-   
-   
-	/* --------- check collisions against waters --------- */
-    
-    var collided_waters = jaws.collideOneWithMany(player,waters);
-    
-    if(collided_waters.length > 0) {
-        collided_waters.forEach(function(item) {
-            waters.remove(item);
-            player.numberOfWatersCollected++;
-        });
-    }
-       
-    /* ========================================================= */
-
   
    
    
@@ -366,17 +300,11 @@ function PlayState() {
 
     
     
-   /* ========================================================= */
-  
+   //Logging:  
   	jaws.log("Player at x:"+player.sprite.x+", y:"+player.sprite.y);
-  
-    
-    
     
     viewport.centerAround(player.sprite);
-    forceInsideCanvas(player.sprite)
-    // bullets.removeIf(isOutsideCanvas) // delete items for which isOutsideCanvas(item) is true
-    
+    force_inside_canvas(player.sprite)    
     fps.innerHTML    = jaws.game_loop.fps    
   }
 
@@ -401,11 +329,27 @@ function PlayState() {
     player_hud.draw();
     
   }
-  
+
+
+  /**
+   * Reset all event flags associated with collision detection.
+   */  
+  this.resetCollideEventFlags = function(){
+  	playerDidCollide = false;
+  	playerCollidedWithMedpac    = false;
+  	playerCollidedWithBottlecap = false;
+  	playerCollidedWithRations   = false;
+  	playerCollidedWithWaters    = false;
+  	playerCollidedWithBoundary  = false;
+  	playerCollidedWithBuilding  = false;
+  	playerCollidedWithShrubbery = false;
+  	playerCollidedWithLantern   = false;
+  	playerCollidedWithLanternPost = false;
+  }
  
   
   /* ------------- Auxiliary Setup Functions ------------- */
-  function setupBackgroundTiles() {
+  function setup_background_tiles() {
     var backgroundTiles = new jaws.SpriteList();
     
     for(var xIndex = 0; xIndex < width; xIndex++) {
@@ -418,7 +362,7 @@ function PlayState() {
   }
   
   
-  function setupRoadTiles() {
+  function setup_road_tiles() {
   	var roadTiles = new jaws.SpriteList();
   	
   	for(var yIndex = 0; yIndex < 9; yIndex++) {
@@ -444,7 +388,7 @@ function PlayState() {
   }
   
   
-  function setupLanterns() {
+  function setup_lanterns() {
   	var lanterns = new jaws.SpriteList();
   	
 	lanterns.push( new Lantern(jaws.width*3.43/4, game_height_pixels*1.3/4, true) );
@@ -462,7 +406,7 @@ function PlayState() {
   }
   
   
-  function setupBuildings() {
+  function setup_buildings() {
   	var buildings = new jaws.SpriteList();
   	
   	buildings.push( new Building({type:1,x:game_width_pixels/4.5,y:game_height_pixels/4}));
@@ -476,7 +420,7 @@ function PlayState() {
   }
   
   
-  function setupBoundaries() {
+  function setup_boundaries() {
   	var boundaries = new jaws.SpriteList();
   	
   	var offset = 35;
@@ -508,12 +452,12 @@ function PlayState() {
 
   /* Simular to example1 but now we're using jaws properties to get width and height of canvas instead */
   /* This mainly since we let jaws handle the canvas now */
-  function isOutsideCanvas(item) { 
+  function is_outside_canvas(item) { 
     return (item.x < 0 || item.y < 0 || item.x > game_width_pixels || item.y > game_height_pixels); 
   }
     
     
-  function forceInsideCanvas(item) {
+  function force_inside_canvas(item) {
     if(item.x - item.width < 0)                     { item.x = 0 + item.width;  }
     if(item.x + item.width > game_width_pixels)     { item.x = game_width_pixels - item.width; }
     if(item.y - item.height < 0)                    { item.y = 0 + item.height; }
@@ -521,8 +465,28 @@ function PlayState() {
   }
   
   
-  function resetCollisionFlags() {
+   /**
+   * Check if there was a collision between a single object 'object' and the 
+   * objects of list 'list'.  If there was, return true and remove the
+   * collided objects from 'list'; return false otherwise.
+   * @param {Object} object an object that can be collided against
+   * @param {List} list a list of objects that can be collided against
+   * @return true if the object collided against anything in the list  
+   */
+  function check_collided_and_remove(object, list) {
+  
+  	var collided_objects = jaws.collideOneWithMany(object, list);
   	
+  	if(collided_objects.length > 0) {
+  		collided_objects.forEach(function(item){
+  			list.remove(item);
+  		});
+  		return true;
+  	}
+  	
+  	else {
+  		return false;
+  	}
   }
-
 }
+
