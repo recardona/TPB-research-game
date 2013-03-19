@@ -1,4 +1,4 @@
-/*
+/**
  *
  * PlayState is the actual game play. 
  * We switch to it once user choses "Start game"
@@ -14,14 +14,19 @@ function PlayState() {
   var buildings   = new jaws.SpriteList();
   var boundaries  = new jaws.SpriteList();
   var shrubberies = new jaws.SpriteList();
-  var medpacs     = new jaws.SpriteList();
   
+  var medpacs     = new jaws.SpriteList();
   var bottlecaps  = new jaws.SpriteList();
   var rations     = new jaws.SpriteList();
   var waters      = new jaws.SpriteList();
   
-  var sqrt_nine_halves = 3*Math.SQRT1_2;
+ 
+  var MAX_NUMBER_OF_ITEMS = 16;
+  var acceptable_item_positions = setup_acceptable_item_positions();
   
+
+  
+  var sqrt_nine_halves = 3*Math.SQRT1_2;
   
   var width  = 72;
   var height = 54;
@@ -68,13 +73,10 @@ function PlayState() {
   	
     /* Player HUD setup. */
     player_hud = new HUD(player);
+    
+    /* Prepare random item generation */
+    generate_random_item(5); //every 5 seconds
        
-	/* Initial item setup*/
-	medpacs.push(new Item({type:"medpac", x:500, y:670}));
-	bottlecaps.push(new Item({type:"bottlecap", x:600, y:670}));
-	rations.push(new Item({type:"rations", x:600, y:770}));
-	waters.push(new Item({type:"water", x:500, y:770}));
-		
 	jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
   }
@@ -84,6 +86,7 @@ function PlayState() {
   	lanterns.update();
   	player_hud.update();    
   	player.update();
+  	
     
     /* ---- handle input and check for building collisions ----- */
     var delta_x = 0;
@@ -238,6 +241,63 @@ function PlayState() {
     player_hud.draw();
     
   }
+  
+  function generate_random_item(seconds_delay) {
+  	
+  	if(medpacs.length + bottlecaps.length + rations.length + waters.length < MAX_NUMBER_OF_ITEMS)
+  	{
+  		//only generate an item if we have less than 16 on the battle field
+  		var list;
+  		var list_item="CHANGEME";
+  		
+  		switch(get_random_int(0,4))
+  		{
+  			case 0:
+  				list = medpacs;
+  				list_item=list_item.replace("CHANGEME", "medpac");
+  				break;
+  				
+  			case 1:
+  				list = bottlecaps;
+  				list_item=list_item.replace("CHANGEME", "bottlecap");
+  				break;
+  			
+  			case 2:
+  				list = rations;
+  				list_item=list_item.replace("CHANGEME", "rations");
+  				break;
+  			
+  			case 3:
+  				list = waters;
+  				list_item=list_item.replace("CHANGEME", "water");
+  				break;
+  			
+  			default:
+  				break; 
+  		}
+  		
+  		var item_position;
+  		do {
+  			item_position = get_random_int(0,MAX_NUMBER_OF_ITEMS);
+  		} while(!item_position_is_available(item_position));
+  		
+  		//now that we've found a position, let's reserve it:
+  		acceptable_item_positions[item_position][2] = true;
+  		
+  		//at this point, we've decided what item to generate, and where is the item's anchor.
+  		//now we're going to add some random offset to spice things up.
+  		var xoffset = 50 * random_sigmoid();
+  		var yoffset = 50 * random_sigmoid();
+  		var x = acceptable_item_positions[item_position][0] + xoffset;
+  		var y = acceptable_item_positions[item_position][1] + yoffset;
+  		
+  		//Item generation!
+  		list.push(new Item({type:list_item, x:x, y:y, position_id:item_position}));
+  		
+  	}
+  	
+  	setTimeout(function(){generate_random_item(seconds_delay);}, seconds_delay*1000);
+  }
 
 
   /**
@@ -284,6 +344,7 @@ function PlayState() {
    * Check if there was a collision between a single object 'object' and the 
    * objects of list 'list'.  If there was, return true and remove the
    * collided objects from 'list'; return false otherwise.
+   * Also, clean up the item's location to generate new items there.
    * @param {Object} object an object that can be collided against
    * @param {List} list a list of objects that can be collided against
    * @return true if the object collided against anything in the list  
@@ -295,6 +356,7 @@ function PlayState() {
   	if(collided_objects.length > 0) {
   		collided_objects.forEach(function(item){
   			list.remove(item);
+  			acceptable_item_positions[item.position_id][2]=false;
   		});
   		return true;
   	}
@@ -303,8 +365,21 @@ function PlayState() {
   		return false;
   	}
   }
+
  
+  /**
+   * Returns a random integer between min and max (exclusive)
+   * Using Math.round() will give you a non-uniform distribution!
+   */
+  function get_random_int(min, max) {
+  	return Math.floor(Math.random() * (max - min)) + min;
+  }
   
+  function item_position_is_available(position_index) {
+  	return !acceptable_item_positions[position_index][2];
+  }
+  
+
   /* -------------------- Auxiliary Setup Functions -------------------- */
   function setup_background_tiles() {
     var backgroundTiles = new jaws.SpriteList();
@@ -402,6 +477,81 @@ function PlayState() {
 	boundaries.push(bottomWall);
 	
 	return boundaries;
+  }
+  
+  function setup_acceptable_item_positions() {
+  	
+  	var acceptable_item_positions = new Array(MAX_NUMBER_OF_ITEMS);
+  	
+  	for(var rowIndex = 0; rowIndex < MAX_NUMBER_OF_ITEMS; rowIndex++) {
+  		acceptable_item_positions[rowIndex] = new Array(3);
+  	}
+
+	acceptable_item_positions[0][0] = 210;
+	acceptable_item_positions[0][1] = 445;
+	acceptable_item_positions[0][2] = false; //not occupied
+	
+	acceptable_item_positions[1][0] = 335;
+	acceptable_item_positions[1][1] = 720;
+	acceptable_item_positions[1][2] = false; //not occupied
+
+	acceptable_item_positions[2][0] = 575;
+	acceptable_item_positions[2][1] = 1530;
+	acceptable_item_positions[2][2] = false; //not occupied
+
+	acceptable_item_positions[3][0] = 850;
+	acceptable_item_positions[3][1] = 880;
+	acceptable_item_positions[3][2] = false; //not occupied
+
+	acceptable_item_positions[4][0] = 980;
+	acceptable_item_positions[4][1] = 1465;
+	acceptable_item_positions[4][2] = false; //not occupied
+
+	acceptable_item_positions[5][0] = 1040;
+	acceptable_item_positions[5][1] = 1275;
+	acceptable_item_positions[5][2] = false; //not occupied
+
+	acceptable_item_positions[6][0] = 1100;
+	acceptable_item_positions[6][1] = 405;
+	acceptable_item_positions[6][2] = false; //not occupied
+
+	acceptable_item_positions[7][0] = 1100;
+	acceptable_item_positions[7][1] = 780;
+	acceptable_item_positions[7][2] = false; //not occupied
+
+	acceptable_item_positions[8][0] = 1300;
+	acceptable_item_positions[8][1] = 1400;
+	acceptable_item_positions[8][2] = false; //not occupied
+
+	acceptable_item_positions[9][0] = 1540;
+	acceptable_item_positions[9][1] = 1295;
+	acceptable_item_positions[9][2] = false; //not occupied
+	
+	acceptable_item_positions[10][0] = 1575;
+	acceptable_item_positions[10][1] = 925;
+	acceptable_item_positions[10][2] = false; //not occupied
+
+	acceptable_item_positions[11][0] = 1745;
+	acceptable_item_positions[11][1] = 600;
+	acceptable_item_positions[11][2] = false; //not occupied
+
+	acceptable_item_positions[12][0] = 2000;
+	acceptable_item_positions[12][1] = 400;
+	acceptable_item_positions[12][2] = false; //not occupied
+
+	acceptable_item_positions[13][0] = 2000;
+	acceptable_item_positions[13][1] = 900;
+	acceptable_item_positions[13][2] = false; //not occupied
+
+	acceptable_item_positions[14][0] = 2100;
+	acceptable_item_positions[14][1] = 1100;
+	acceptable_item_positions[14][2] = false; //not occupied
+
+	acceptable_item_positions[15][0] = 588;
+	acceptable_item_positions[15][1] = 1100;
+	acceptable_item_positions[15][2] = false; //not occupied
+	
+	return acceptable_item_positions;
   }
   
 }

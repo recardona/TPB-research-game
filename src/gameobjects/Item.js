@@ -12,6 +12,7 @@
  */
 function Item(properties) {
 	
+	this.position_id = properties.position_id; // this is to help keep track of where the item is on the map
 	this.sprite = new jaws.Sprite({x:properties.x, y:properties.y, scale:0.40, anchor:"center", image:"./assets/art/"+
 		"CHANGEME.png".replace("CHANGEME", properties.type)});
 		
