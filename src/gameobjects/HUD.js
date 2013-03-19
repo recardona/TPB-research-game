@@ -156,29 +156,34 @@ function MedicineMeter(player) {
 
 function ItemCounter(player) {
     
-    var ITEM_HUD_X = 540;
+    var ITEM_HUD_X = 530;
     var ITEM_HUD_Y = 90;
+    var BOTTLECAP_COUNTER_INDEX = 0;
+    var RATIONS_COUNTER_INDEX = 1;
+    var WATERS_COUNTER_INDEX = 2;
+    var counters = new Array();
+    
     
     this.bottlecapAnimation = new jaws.Animation({sprite_sheet: "./assets/art/bottlecap_anim.png", frame_size:[104,104], loop:true});
-    var bottlecaps_counter  = 0;
+    counters[BOTTLECAP_COUNTER_INDEX] = 0;
     this.bottlecapSprite    = new jaws.Sprite({anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y-40, scale:0.40});
     this.bottlecapSprite.setImage(this.bottlecapAnimation.next());
 
     this.rationsAnimation = new jaws.Animation({sprite_sheet: "./assets/art/rations_anim.png", frame_size:[104,104], loop:true});
-    var rations_counter   = 0;
+    counters[RATIONS_COUNTER_INDEX] = 0;
     this.rationsSprite    = new jaws.Sprite({anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y, scale:0.40});
     this.rationsSprite.setImage(this.rationsAnimation.next());
     
     this.watersAnimation = new jaws.Animation({sprite_sheet: "./assets/art/water_anim.png", frame_size:[104,104], loop:true});
-    var waters_counter   = 0;
+    counters[WATERS_COUNTER_INDEX] = 0;
     this.watersSprite    = new jaws.Sprite({anchor:"center", x:ITEM_HUD_X, y:ITEM_HUD_Y+40, scale:0.40});
     this.watersSprite.setImage(this.watersAnimation.next());
     
     
     this.update = function() {
         
-        if(player.numberOfBottlecapsCollected != bottlecaps_counter) {
-        	bottlecaps_counter = player.numberOfBottlecapsCollected;
+        if(player.numberOfBottlecapsCollected != counters[BOTTLECAP_COUNTER_INDEX]) {
+        	counters[BOTTLECAP_COUNTER_INDEX] = player.numberOfBottlecapsCollected;
         	this.bottlecapSprite.setImage(this.bottlecapAnimation.next());
         	
         	var bcSprite = this.bottlecapSprite; //keep references for anon. function
@@ -186,8 +191,8 @@ function ItemCounter(player) {
         	setTimeout(function(){bcSprite.setImage(bcAnim.next());},500);	        	
         }
 
-        if(player.numberOfRationsCollected != rations_counter) {
-        	rations_counter = player.numberOfRationsCollected;
+        if(player.numberOfRationsCollected != counters[RATIONS_COUNTER_INDEX]) {
+        	counters[RATIONS_COUNTER_INDEX] = player.numberOfRationsCollected;
         	this.rationsSprite.setImage(this.rationsAnimation.next());
         	
         	var rSprite = this.rationsSprite; //keep references for anon. function
@@ -195,8 +200,8 @@ function ItemCounter(player) {
         	setTimeout(function(){rSprite.setImage(rAnim.next());}, 500);
         }
         
-        if(player.numberOfWatersCollected != waters_counter) {
-        	waters_counter = player.numberOfWatersCollected;
+        if(player.numberOfWatersCollected != counters[WATERS_COUNTER_INDEX]) {
+        	counters[WATERS_COUNTER_INDEX] = player.numberOfWatersCollected;
         	this.watersSprite.setImage(this.watersAnimation.next());
         	
         	var wSprite = this.watersSprite; //keep references for anon. function
@@ -207,20 +212,18 @@ function ItemCounter(player) {
     }
     
     this.draw = function() {
-        
         this.bottlecapSprite.draw();
         this.rationsSprite.draw();
         this.watersSprite.draw();
         
-        // jaws.context.clearRect(0,0,jaws.width,jaws.height);
-        // title_img.draw();
-        // for(var i=0; items[i]; i++) {
-            // jaws.context.font = "36pt Denk One";
-            // jaws.context.lineWidth = 20;
-            // jaws.context.fillStyle =  (i == index) ? "#E5F361" : "#62625F";
-            // jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
-            // jaws.context.fillText(items[i], jaws.width*3/4, jaws.height*7/8 + i * (50));
-        // } 
+        for(var counterIndex=0; counterIndex < counters.length; counterIndex++) {
+        	
+        	jaws.context.font = "24pt Denk One";
+        	jaws.context.lineWidth = 20;
+        	jaws.context.fillStyle = "#1C1C1C";
+        	jaws.context.strokeStyle = "rgba(200,200,200,0.0)";
+        	jaws.context.fillText("x"+counters[counterIndex], ITEM_HUD_X+30, ITEM_HUD_Y-26 + (counterIndex*40));
+        }
     }
     
 }
