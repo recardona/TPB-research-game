@@ -26,7 +26,7 @@ function PlayState() {
   
 
   
-  var sqrt_nine_halves = 3*Math.SQRT1_2;
+  var sqrt_sixteen_halves = 4*Math.SQRT1_2;
   
   var width  = 72;
   var height = 54;
@@ -95,11 +95,11 @@ function PlayState() {
     if(jaws.pressed("left"))
     {
     	if(jaws.pressed("up") || jaws.pressed("down")) {
-    		delta_x = -sqrt_nine_halves; 
-    		// diagonal_delta = 3, so: 3^2 = x^2 + y^2 => 9 = 2*x^2 => sqrt(9/2) = x 
+    		delta_x = -sqrt_sixteen_halves; 
+    		// diagonal_delta = 4, so: 4^2 = x^2 + y^2 => 16 = 2*x^2 => sqrt(16/2) = x 
     	}
     	else {
-    		delta_x = -3;
+    		delta_x = -4;
     	}
     	
         player.sprite.x += delta_x;
@@ -110,11 +110,11 @@ function PlayState() {
     else if(jaws.pressed("right")) 
     { 
     	if(jaws.pressed("up") || jaws.pressed("down")) {
-    		delta_x = sqrt_nine_halves; 
+    		delta_x = sqrt_sixteen_halves; 
     		// diagonal_delta = 3, so: 3^2 = x^2 + y^2 => 9 = 2*x^2 => sqrt(9/2) = x 
     	}
     	else {
-    		delta_x = 3;
+    		delta_x = 4;
     	}
 
         player.sprite.x += delta_x;
@@ -126,11 +126,11 @@ function PlayState() {
     if(jaws.pressed("up"))    
     {
     	if(jaws.pressed("left") || jaws.pressed("right")) {
-    		delta_y = -sqrt_nine_halves; 
+    		delta_y = -sqrt_sixteen_halves; 
 			// diagonal_delta = 3, so: 3^2 = x^2 + y^2 => 9 = 2*y^2 => sqrt(9/2) = y 
     	}
     	else {
-    		delta_y = -3;
+    		delta_y = -4;
     	}
     	    	
         player.sprite.y += delta_y;
@@ -142,11 +142,11 @@ function PlayState() {
     else if(jaws.pressed("down"))  
     { 
     	if(jaws.pressed("left") || jaws.pressed("right")) {
-    		delta_y = sqrt_nine_halves; 
+    		delta_y = sqrt_sixteen_halves; 
     		// diagonal_delta = 3, so: 3^2 = x^2 + y^2 => 9 = 2*y^2 => sqrt(9/2) = y 
     	}
     	else {
-    		delta_y = 3;
+    		delta_y = 4;
     	}
     	
         player.sprite.y += delta_y;
