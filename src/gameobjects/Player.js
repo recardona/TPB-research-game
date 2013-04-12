@@ -29,11 +29,11 @@ function Player(x, y) {
 	this.y = this.sprite.y;
 
 	//Game logic attributes
-	this.life = 100;
-	this.zombieLevel = 0;
+	this.zombieLevel = 4;
 	this.lightExposure = 50.0;
+	this.timeSpentInLight = 0.0;
 	this.medicineLife = 50.0;
-	this.diseasePenalty = 0.1;
+	this.diseasePenalty = 0.05;
 	this.numberOfWatersCollected = 0;
 	this.numberOfRationsCollected = 0;
 	this.numberOfBottlecapsCollected = 0;
@@ -56,26 +56,24 @@ function Player(x, y) {
 		return this.sprite.rect().move(32, 32).resizeTo(32, 32);
 	}
 
-	this.applyDamage = function(inLantern) {
-		if (this.medicineLife > 75.0 && inLantern) {
-			this.life -= this.diseasePenalty;
-		} else if (this.medicineLife > 0.0) {
-			
+	this.applyDamage = function() {
+
+		if (this.lightExposure > 0.0) {
+			this.lightExposure -= this.diseasePenalty;
+		}
+		
+		else if (this.medicineLife > 0.0) {
 			this.medicineLife -= this.diseasePenalty;
-		} else {
-			this.life -= this.diseasePenalty;
 		}
 
-		this.lightExposure -= this.diseasePenalty;
-
-		bound_health_stats(this);
+		bound_player_stats(this);
 	}
 	
 	/**
 	 * Forces the 'player' to have reasonable life values.
 	 * @param {Object} player the player to bound the life of
 	 */
-	function bound_health_stats(player) {
+	function bound_player_stats(player) {
 		if (player.medicineLife > 100) {
 			player.medicineLife = 100;
 		}
@@ -83,9 +81,9 @@ function Player(x, y) {
 		if (player.medicineLife < 0) {
 			player.medicineLife = 0;
 		}
-
-		if (player.life > 100) {
-			player.life = 100;
+		
+		if (player.lightExposure > 100) {
+			player.lightExposure = 100.0;
 		}
 
 		if (player.lightExposure < 0) {

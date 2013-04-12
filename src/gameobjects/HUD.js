@@ -56,7 +56,7 @@ function FaceIndicator(player) {
 		anchor : "center",
 		scale : 0.75
 	});
-	this.hudBorder.setImage(this.borderAnimation.next());
+	this.hudBorder.setImage(this.borderAnimation.frames[0]);
 
 	this.update = function() {
 		//check the player's life, and change the player's HUD face accordingly
@@ -104,14 +104,13 @@ function FaceIndicator(player) {
 		//if there is a face change, highlight the HUD box to make it
 		//obvious to the player
 		if (old_anim_index != this.faceAnimationIndex) {
-			this.hudBorder.setImage(this.borderAnimation.next());
-
+			this.hudBorder.setImage(this.borderAnimation.frames[1]);
 			var hudB = this.hudBorder;
 			//keep references for anon. function
 			var bAnim = this.borderAnimation;
 			setTimeout(function() {
-				hudB.setImage(bAnim.next());
-			}, 750);
+				hudB.setImage(bAnim.frames[0]);
+			}, 500);
 		}
 
 	}
@@ -163,7 +162,6 @@ function FluidMeter(player, type) {
 		var new_indicator_sprite_width;
 
 		if (type == 'medicine') {
-			console.log(player.medicineLife);
 			new_indicator_sprite_width = (player.medicineLife / 100.0) * 122;
 		} else if (type == 'light') {
 			new_indicator_sprite_width = (player.lightExposure / 100.0) * 122;
@@ -171,8 +169,6 @@ function FluidMeter(player, type) {
 
 		// Meter Sprite has an effective drawing width of 122 px (for 100% life),
 		// we must scale it down 1.22 px for every unit change of fluid
-
-		console.log(new_indicator_sprite_width);
 		this.indicatorSprite.setWidth(new_indicator_sprite_width);
 	}
 

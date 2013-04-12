@@ -163,9 +163,7 @@ function PlayState() {
     		playerCollidedWithBuilding = true;
     	}
     }); 
-    
-
-    player.diseasePenalty = 0.05; //re-assign this, just to reset
+   
     lanterns.forEach(function(lantern, index, array) {
 
     	//if the player collided with a lamppost, revert the move
@@ -179,27 +177,32 @@ function PlayState() {
     	if(jaws.collideCircles(player, lantern)) {
     		playerInLanternLight = true;
     		
-    		//while inside the light, the disease acts slower...
-    		player.diseasePenalty = 0.001;
+    		//we accumulate the time you've spent inside
+    		player.timeSpentInLight += jaws.game_loop.tick_duration;
     		
-    		//...unless you have too much medicine, in which cast it acts faster!
-    		if(player.medicineLife > 75) {
-    			player.diseasePenalty = 0.1; 
+    		//if the player has spent more than 1 second in the light,
+    		if(player.timeSpentInLight > 1000.0) {
+    			//reset the player's light counter,
+    			player.timeSpentInLight = 0.0;
+    			
+    			//and give the player a light boost
+    			player.lightExposure += 25.0
     		}
+    		
     	}
     });
     
-        
+    
     playerCollidedWithMedpac    = check_collided_and_remove(player,medpacs);
     playerCollidedWithBottlecap = check_collided_and_remove(player,bottlecaps);
     playerCollidedWithRations   = check_collided_and_remove(player,rations);
     playerCollidedWithWaters    = check_collided_and_remove(player,waters);
    
-    if(playerCollidedWithMedpac) {player.medicineLife += 25;}
+    if(playerCollidedWithMedpac) {player.medicineLife += 25.0;}
     if(playerCollidedWithBottlecap) {player.numberOfBottlecapsCollected++;}
     if(playerCollidedWithRations) {player.numberOfRationsCollected++;}
     if(playerCollidedWithWaters) {player.numberOfWatersCollected++;}
-       
+    if(!playerInLanternLight) {player.timeSpentInLight = 0.0;}   
        
     /* Set general collision flag */
     playerDidCollide = (playerCollidedWithMedpac || playerCollidedWithBottlecap || 
@@ -207,7 +210,7 @@ function PlayState() {
     	playerCollidedWithBuilding || playerCollidedWithShrubbery || playerCollidedWithLantern || 
     	playerInLanternLight);
     
-    player.applyDamage(playerInLanternLight);
+    player.applyDamage();
     reset_event_flags();    
        
     // Final checks:
