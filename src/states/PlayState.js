@@ -77,7 +77,7 @@ function PlayState() {
     /* Prepare random item generation */
     generate_random_item(5); //every 5 seconds
        
-	jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
+	//jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
   }
 
@@ -86,6 +86,11 @@ function PlayState() {
   	lanterns.update();
   	player_hud.update();    
   	player.update();
+  	
+  	// Game over!
+  	if(player.zombieLevel == 8) {
+  		jaws.switchGameState(GameOverState);
+  	}
   	
     
     /* ---- handle input and check for building collisions ----- */

@@ -94,7 +94,8 @@ function FaceIndicator(player) {
 				this.playerFace.setImage(this.faceAnimation.frames[6]);
 				this.faceAnimationIndex = 6;
 			}
-		} else {
+		} else { //player.zombieLevel == 8 
+			//it's 8 because of the formula calculation, in Player.js: line 48
 			if (this.faceAnimationIndex != 7) {
 				this.playerFace.setImage(this.faceAnimation.frames[7]);
 				this.faceAnimationIndex = 7;

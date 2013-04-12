@@ -7,7 +7,7 @@
  */
 function MenuState() {
   var index = 0;
-  var items = ["Start", "About"];
+  var items = ["Start"];
   var title_anim;
   var title_img;
   var lightbulb_on = true;
