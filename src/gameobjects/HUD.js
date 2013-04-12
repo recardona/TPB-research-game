@@ -3,8 +3,8 @@ function HUD(player) {
 	var hudElements = new jaws.SpriteList();
 
 	hudElements.push(new FaceIndicator(player));
-	hudElements.push(new FluidMeter(player,'medicine'));
-	hudElements.push(new FluidMeter(player,'light'));
+	hudElements.push(new FluidMeter(player, 'medicine'));
+	hudElements.push(new FluidMeter(player, 'light'));
 	hudElements.push(new ItemCounter(player));
 
 	this.update = function() {
@@ -62,38 +62,34 @@ function FaceIndicator(player) {
 		//check the player's life, and change the player's HUD face accordingly
 		var old_anim_index = this.faceAnimationIndex;
 
-		if (player.life > 87.5) {
+		if (player.zombieLevel == 0) {
 			if (this.faceAnimationIndex != 0) {
 				this.playerFace.setImage(this.faceAnimation.frames[0]);
 				this.faceAnimationIndex = 0;
 			}
-		} else if (player.life > 75) {
-			if (this.faceAnimationIndex != 1) {
-				this.playerFace.setImage(this.faceAnimation.frames[1]);
-				this.faceAnimationIndex = 1;
-			}
-		} else if (player.life > 62.5) {
+		} else if (player.zombieLevel == 2) {
 			if (this.faceAnimationIndex != 2) {
+				// 04-11-13: we skip from frames[0] to frames[2] because we now need 7 faces
 				this.playerFace.setImage(this.faceAnimation.frames[2]);
 				this.faceAnimationIndex = 2;
 
 			}
-		} else if (player.life > 50) {
+		} else if (player.zombieLevel == 3) {
 			if (this.faceAnimationIndex != 3) {
 				this.playerFace.setImage(this.faceAnimation.frames[3]);
 				this.faceAnimationIndex = 3;
 			}
-		} else if (player.life > 37.5) {
+		} else if (player.zombieLevel == 4) {
 			if (this.faceAnimationIndex != 4) {
 				this.playerFace.setImage(this.faceAnimation.frames[4]);
 				this.faceAnimationIndex = 4;
 			}
-		} else if (player.life > 25) {
+		} else if (player.zombieLevel == 5) {
 			if (this.faceAnimationIndex != 5) {
 				this.playerFace.setImage(this.faceAnimation.frames[5]);
 				this.faceAnimationIndex = 5;
 			}
-		} else if (player.life > 12.5) {
+		} else if (player.zombieLevel == 6) {
 			if (this.faceAnimationIndex != 6) {
 				this.playerFace.setImage(this.faceAnimation.frames[6]);
 				this.faceAnimationIndex = 6;
@@ -167,6 +163,7 @@ function FluidMeter(player, type) {
 		var new_indicator_sprite_width;
 
 		if (type == 'medicine') {
+			console.log(player.medicineLife);
 			new_indicator_sprite_width = (player.medicineLife / 100.0) * 122;
 		} else if (type == 'light') {
 			new_indicator_sprite_width = (player.lightExposure / 100.0) * 122;
@@ -175,6 +172,7 @@ function FluidMeter(player, type) {
 		// Meter Sprite has an effective drawing width of 122 px (for 100% life),
 		// we must scale it down 1.22 px for every unit change of fluid
 
+		console.log(new_indicator_sprite_width);
 		this.indicatorSprite.setWidth(new_indicator_sprite_width);
 	}
 

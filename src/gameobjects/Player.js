@@ -30,17 +30,22 @@ function Player(x, y) {
 
 	//Game logic attributes
 	this.life = 100;
-	this.lightExposure = 0.0;
-	this.medicineLife = 0.0;
+	this.zombieLevel = 0;
+	this.lightExposure = 50.0;
+	this.medicineLife = 50.0;
 	this.diseasePenalty = 0.1;
 	this.numberOfWatersCollected = 0;
 	this.numberOfRationsCollected = 0;
 	this.numberOfBottlecapsCollected = 0;
 
 	this.update = function() {
-		this.x = this.sprite.x;
 		//refresh the info
+		this.x = this.sprite.x;
 		this.y = this.sprite.y;
+		
+		var discrete_medicine_level = convert_to_discrete_level(this.medicineLife);
+		var discrete_exposure_level = convert_to_discrete_level(this.lightExposure);
+		this.zombieLevel = (discrete_medicine_level - 2) * (discrete_exposure_level - 2) + 4;				
 	}
 
 	this.draw = function() {
@@ -55,6 +60,7 @@ function Player(x, y) {
 		if (this.medicineLife > 75.0 && inLantern) {
 			this.life -= this.diseasePenalty;
 		} else if (this.medicineLife > 0.0) {
+			
 			this.medicineLife -= this.diseasePenalty;
 		} else {
 			this.life -= this.diseasePenalty;
@@ -64,6 +70,7 @@ function Player(x, y) {
 
 		bound_health_stats(this);
 	}
+	
 	/**
 	 * Forces the 'player' to have reasonable life values.
 	 * @param {Object} player the player to bound the life of
@@ -84,6 +91,27 @@ function Player(x, y) {
 		if (player.lightExposure < 0) {
 			player.lightExposure = 0;
 		}
+	}
+	
+	/**
+	 * Auxiliary function to convert a continuous player attribute level
+	 * to its corresponding discrete level.  This function is designed
+	 * around the player's medicineLife and lightExposure attributes.
+	 * 
+	 * Both attributes are bounded between 0.0 and 100.0, and their
+	 * discrete mappings are bounded between 0 and 4.
+	 * @param {Object} continuousLevel the continuous value of the player attribute
+	 * @return the discrete value that maps to the player's continuous-valued attribute
+	 */
+	function convert_to_discrete_level(continuousLevel) {
+		// Example:
+		//  79.0, which is between 75.0 and 100.0, belongs at the discrete
+		//  value interval of 4.
+		//  ceil( ( (79/100)*4 ) ) :)
+		
+		var transformedContinuousLevel = ((continuousLevel/100)*4);
+		var discreteLevel = Math.ceil(transformedContinuousLevel);
+		return discreteLevel;
 	}
 
 }

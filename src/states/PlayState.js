@@ -165,7 +165,7 @@ function PlayState() {
     }); 
     
 
-    player.diseasePenalty = 0.01; //re-assign this, just to reset
+    player.diseasePenalty = 0.05; //re-assign this, just to reset
     lanterns.forEach(function(lantern, index, array) {
 
     	//if the player collided with a lamppost, revert the move
@@ -195,7 +195,7 @@ function PlayState() {
     playerCollidedWithRations   = check_collided_and_remove(player,rations);
     playerCollidedWithWaters    = check_collided_and_remove(player,waters);
    
-    if(playerCollidedWithMedpac) {player.medicineLife += 10;}
+    if(playerCollidedWithMedpac) {player.medicineLife += 25;}
     if(playerCollidedWithBottlecap) {player.numberOfBottlecapsCollected++;}
     if(playerCollidedWithRations) {player.numberOfRationsCollected++;}
     if(playerCollidedWithWaters) {player.numberOfWatersCollected++;}
