@@ -1,8 +1,13 @@
-function HUD(player,gametype) {
+/**
+ * The Heads Up Display provides gameplay information.
+ * @param {Object} player the player we're tracking
+ * @param {Integer} gametype the variant of the game we're playing
+ */
+function HUD(player, gametype) {
 
 	var hudElements = new jaws.SpriteList();
 
-	hudElements.push(new FeedbackIndicator(player,gametype));
+	hudElements.push(new FeedbackIndicator(player, gametype));
 	hudElements.push(new FluidMeter(player, 'medicine'));
 	hudElements.push(new FluidMeter(player, 'light'));
 	hudElements.push(new ItemCounter(player));
@@ -19,16 +24,16 @@ function HUD(player,gametype) {
 
 /**
  * The FeedbackIndicator is the HUD Element which conveys Feedback
- * on the player's current health.  Instead of a direct meter, this 
+ * on the player's current health.  Instead of a direct meter, this
  * uses stages of player health, which slowly depict or describe
  * the player becoming a zombie.
  * @param {Object} player the player we're tracking
  */
-function FeedbackIndicator(player,gametype) {
+function FeedbackIndicator(player, gametype) {
 
 	var FACE_HUD_X = 675;
 	var FACE_HUD_Y = 90;
-	var zombie_level_text = ["Very Healthy", "", "Healthy","Somewhat Healthy","Neither Ill nor Healthy","Somewhat Ill", "Ill", "", "Very Ill"];
+	var zombie_level_text = ["Very Healthy", "", "Healthy", "Somewhat Healthy", "Neither Ill nor Healthy", "Somewhat Ill", "Ill", "", "Very Ill"];
 
 	/* This will animate the image of the player in the top-right corner of the HUD. */
 	this.faceAnimation = new jaws.Animation({
@@ -96,7 +101,7 @@ function FeedbackIndicator(player,gametype) {
 				this.playerFace.setImage(this.faceAnimation.frames[6]);
 				this.faceAnimationIndex = 6;
 			}
-		} else { //player.zombieLevel == 8 
+		} else {//player.zombieLevel == 8
 			//it's 8 because of the formula calculation, in Player.js: line 48
 			if (this.faceAnimationIndex != 7) {
 				this.playerFace.setImage(this.faceAnimation.frames[7]);
@@ -119,63 +124,59 @@ function FeedbackIndicator(player,gametype) {
 	}
 
 	this.draw = function() {
-		
+
 		if (gametype == 1 || gametype == 3) {
 			//both these game modes are embodied feedback modes
 			this.playerFace.draw();
-		}
-		
-		else {
+		} else {
 			//these game modes are text feedback modes
 			jaws.context.font = "25pt Geo";
 			jaws.context.lineWidth = 20;
 			jaws.context.fillStyle = "#1C1C1C";
 			jaws.context.strokeStyle = "rgba(200,200,200,0.0)";
-			
-			switch(player.zombieLevel)
-			{
-				case 0:
-					jaws.context.fillText("Very", FACE_HUD_X-50, FACE_HUD_Y);
-					jaws.context.fillText("Healthy", FACE_HUD_X-50, FACE_HUD_Y+25);
-			  		break;
-			
-				case 2:
-					jaws.context.fillText("Healthy", FACE_HUD_X-50, FACE_HUD_Y+5);
-			  		break;
-			  		
-		  		case 3:
-					jaws.context.fillText("A Bit", FACE_HUD_X-50, FACE_HUD_Y);
-					jaws.context.fillText("Healthy", FACE_HUD_X-50, FACE_HUD_Y+25);
-		  			break;
-		  		
-		  		case 4:
-					jaws.context.fillText("Neither", FACE_HUD_X-50, FACE_HUD_Y-20);
-					jaws.context.fillText("Ill nor", FACE_HUD_X-50, FACE_HUD_Y+5);
-					jaws.context.fillText("Healthy", FACE_HUD_X-50, FACE_HUD_Y+30);
-		  			break;
-		  		
-		  		case 5:
-		  			jaws.context.fillText("A Bit", FACE_HUD_X-50, FACE_HUD_Y);
-					jaws.context.fillText("Ill", FACE_HUD_X-50, FACE_HUD_Y+25);
-		  			break;
-		  		
-		  		case 6:
-					jaws.context.fillText("Ill", FACE_HUD_X-50, FACE_HUD_Y+5);	  		
-		  			break;
-		  		
-		  		case 8:
-		  			jaws.context.fillText("Very", FACE_HUD_X-50, FACE_HUD_Y);
-					jaws.context.fillText("Ill", FACE_HUD_X-50, FACE_HUD_Y+25);
-		  			break;
 
-			
+			switch(player.zombieLevel) {
+				case 0:
+					jaws.context.fillText("Very", FACE_HUD_X - 50, FACE_HUD_Y);
+					jaws.context.fillText("Healthy", FACE_HUD_X - 50, FACE_HUD_Y + 25);
+					break;
+
+				case 2:
+					jaws.context.fillText("Healthy", FACE_HUD_X - 50, FACE_HUD_Y + 5);
+					break;
+
+				case 3:
+					jaws.context.fillText("A Bit", FACE_HUD_X - 50, FACE_HUD_Y);
+					jaws.context.fillText("Healthy", FACE_HUD_X - 50, FACE_HUD_Y + 25);
+					break;
+
+				case 4:
+					jaws.context.fillText("Neither", FACE_HUD_X - 50, FACE_HUD_Y - 20);
+					jaws.context.fillText("Ill nor", FACE_HUD_X - 50, FACE_HUD_Y + 5);
+					jaws.context.fillText("Healthy", FACE_HUD_X - 50, FACE_HUD_Y + 30);
+					break;
+
+				case 5:
+					jaws.context.fillText("A Bit", FACE_HUD_X - 50, FACE_HUD_Y);
+					jaws.context.fillText("Ill", FACE_HUD_X - 50, FACE_HUD_Y + 25);
+					break;
+
+				case 6:
+					jaws.context.fillText("Ill", FACE_HUD_X - 50, FACE_HUD_Y + 5);
+					break;
+
+				case 8:
+					jaws.context.fillText("Very", FACE_HUD_X - 50, FACE_HUD_Y);
+					jaws.context.fillText("Ill", FACE_HUD_X - 50, FACE_HUD_Y + 25);
+					break;
+
 				default:
 					console.log("Error.")
-			  
+
 			}
 
 		}
-		
+
 		this.hudBorder.draw();
 	}
 }
@@ -351,40 +352,39 @@ function ItemCounter(player) {
 }
 
 function TimeAliveCounter(player) {
-	
+
 	var TIME_COUNTER_HUD_X = 20;
 	var TIME_COUNTER_HUD_Y = 60;
-	
+
 	this.decisecondsAlive = 0.0;
 	this.secondsAlive = 0.0;
 	this.minutesAlive = 0.0;
-	
+
 	this.desisecondsString = "";
 	this.secondsString = "";
 	this.minutesString = "";
-	
-	this.update = function() {		
-		this.desisecondsAlive = Math.floor((player.timeAlive/100) % 10);
-		this.secondsAlive = Math.floor((player.timeAlive/(1000)) % 60);
-		this.minutesAlive = Math.floor((player.timeAlive/(1000*60)) % 60);
-		
+
+	this.update = function() {
+		this.desisecondsAlive = Math.floor((player.timeAlive / 100) % 10);
+		this.secondsAlive = Math.floor((player.timeAlive / (1000)) % 60);
+		this.minutesAlive = Math.floor((player.timeAlive / (1000 * 60)) % 60);
+
 		this.desisecondsString = "" + this.desisecondsAlive;
-		this.secondsString = "X".replace("X", (this.secondsAlive < 10 ? ("0"+this.secondsAlive) : (this.secondsAlive)));
-		this.minutesString = "X".replace("X", (this.minutesAlive < 10 ? ("0"+this.minutesAlive) : (this.minutesAlive)));
+		this.secondsString = "X".replace("X", (this.secondsAlive < 10 ? ("0" + this.secondsAlive) : (this.secondsAlive)));
+		this.minutesString = "X".replace("X", (this.minutesAlive < 10 ? ("0" + this.minutesAlive) : (this.minutesAlive)));
 	}
-	
+
 	this.draw = function() {
 		jaws.context.font = "24pt Denk One";
 		jaws.context.lineWidth = 20;
 		jaws.context.fillStyle = "#1C1C1C";
 		jaws.context.strokeStyle = "rgba(200,200,200,0.0)";
 		jaws.context.fillText("Time Alive:", TIME_COUNTER_HUD_X, TIME_COUNTER_HUD_Y);
-		
+
 		jaws.context.font = "32pt Geo";
 		jaws.context.lineWidth = 20;
 		jaws.context.fillStyle = "#990000";
 		jaws.context.strokeStyle = "rgba(200,200,200,0.0)";
-		jaws.context.fillText(this.minutesString+":"+this.secondsString+":"+this.desisecondsString, TIME_COUNTER_HUD_X+160, TIME_COUNTER_HUD_Y);			
+		jaws.context.fillText(this.minutesString + ":" + this.secondsString + ":" + this.desisecondsString, TIME_COUNTER_HUD_X + 160, TIME_COUNTER_HUD_Y);
 	}
-	
 }
