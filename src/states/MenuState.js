@@ -27,12 +27,12 @@ function MenuState() {
 			}
 		});
 		jaws.on_keydown(["enter", "space"], function() {
-			if (items[index] == "Start") {
-				jaws.switchGameState(PlayState, {
-					fps : 41
-				})
-			}
+			// the last argument in jaws.switchGameState(...)
+			// gets passed in as a parameter to the State
+			if (items[index] == "Start") {jaws.switchGameState(ChooseGameState, {fps : 41});}
 		});
+		
+		
 		title_anim = new jaws.Animation({
 			sprite_sheet : "./assets/art/title_animation.png",
 			frame_size : [874, 579],

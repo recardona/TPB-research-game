@@ -49,7 +49,7 @@ function PlayState() {
   var playerLost  = false;
  
   
-  this.setup = function() {
+  this.setup = function(gametype) {
   	
   	/* Map setup. */
   	grass_blocks = setup_background_tiles();
@@ -72,7 +72,7 @@ function PlayState() {
   	player = new Player(500,1000);
   	
     /* Player HUD setup. */
-    player_hud = new HUD(player);
+    player_hud = new HUD(player,gametype);
     
     /* Prepare random item generation */
     generate_random_item(5); //every 5 seconds

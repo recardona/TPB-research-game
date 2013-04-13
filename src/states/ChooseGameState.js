@@ -1,9 +1,9 @@
 /*
  * GameOverState is where we transition to when the player dies.
  */
-function GameOverState() {
+function ChooseGameState() {
 	var index = 0;
-	var items = ["Try Again", "Quit"];
+	var items = ["Immediate Embodied Feedback","Immediate Text Feedback","Delayed Embodied Feedback", "Delayed Text Feedback"];
 	var title_anim;
 	var title_img;
 	var lightbulb_on = true;
@@ -22,15 +22,14 @@ function GameOverState() {
 				index = 0
 			}
 		});
+		
 		jaws.on_keydown(["enter", "space"], function() {
-			if (items[index] == "Try Again") {
-				jaws.switchGameState(ChooseGameState);
-			}
-			
-			else {
-				jaws.switchGameState(MenuState);
-			}
+			if (items[index] == "Immediate Embodied Feedback") {jaws.switchGameState(PlayState, {fps : 41},1);}
+			if (items[index] == "Immediate Text Feedback") {jaws.switchGameState(PlayState, {fps : 41},2);}
+			if (items[index] == "Delayed Embodied Feedback") {jaws.switchGameState(PlayState, {fps : 41},3);}
+			if (items[index] == "Delayed Text Feedback") {jaws.switchGameState(PlayState, {fps : 41},4);}
 		});
+		
 		title_anim = new jaws.Animation({
 			sprite_sheet : "./assets/art/title_animation.png",
 			frame_size : [874, 579],
@@ -68,7 +67,7 @@ function GameOverState() {
 			jaws.context.lineWidth = 20;
 			jaws.context.fillStyle = (i == index) ? "#E5F361" : "#62625F";
 			jaws.context.strokeStyle = "rgba(200,200,200,0.0)";
-			jaws.context.fillText(items[i], jaws.width / 2.5, jaws.height / 1.8 + i * (75));
+			jaws.context.fillText(items[i], jaws.width / 8, jaws.height / 1.8 + i * (75));
 		}
 	}
 }

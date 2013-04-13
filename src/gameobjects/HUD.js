@@ -1,8 +1,9 @@
-function HUD(player) {
+function HUD(player,gametype) {
 
 	var hudElements = new jaws.SpriteList();
+	
 
-	hudElements.push(new FaceIndicator(player));
+	hudElements.push(new FeedbackIndicator(player,gametype));
 	hudElements.push(new FluidMeter(player, 'medicine'));
 	hudElements.push(new FluidMeter(player, 'light'));
 	hudElements.push(new ItemCounter(player));
@@ -18,16 +19,17 @@ function HUD(player) {
 }
 
 /**
- * The FaceIndicator is the HUD Element which conveys Feedback
- * on the player's current health.  Instead of a direct meter,
- * Follow the Light! uses stages of player health, which slowly
- * depict the player becoming a zombie.
+ * The FeedbackIndicator is the HUD Element which conveys Feedback
+ * on the player's current health.  Instead of a direct meter, this 
+ * uses stages of player health, which slowly depict or describe
+ * the player becoming a zombie.
  * @param {Object} player the player we're tracking
  */
-function FaceIndicator(player) {
+function FeedbackIndicator(player,gametype) {
 
 	var FACE_HUD_X = 675;
 	var FACE_HUD_Y = 90;
+	var zombie_level_text = ["Very Healthy", "", "Ill","Somewhat Ill","Neither Ill nor Healthy","Somewhat Healthy", "Healthy", "", "Very Healthy"];
 
 	/* This will animate the image of the player in the top-right corner of the HUD. */
 	this.faceAnimation = new jaws.Animation({
@@ -118,7 +120,22 @@ function FaceIndicator(player) {
 	}
 
 	this.draw = function() {
-		this.playerFace.draw();
+		
+		if (gametype == 1 || gametype == 3) {
+			//both these game modes are embodied feedback modes
+			this.playerFace.draw();
+		}
+		
+		else {
+			//these game modes are text feedback modes
+			jaws.context.font = "16pt Denk One";
+			jaws.context.lineWidth = 20;
+			jaws.context.fillStyle = "#1C1C1C";
+			jaws.context.strokeStyle = "rgba(200,200,200,0.0)";
+			jaws.context.fillText(zombie_level_text[player.zombieLevel], FACE_HUD_X, FACE_HUD_Y);
+
+		}
+		
 		this.hudBorder.draw();
 	}
 }
