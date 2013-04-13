@@ -6,6 +6,7 @@ function HUD(player) {
 	hudElements.push(new FluidMeter(player, 'medicine'));
 	hudElements.push(new FluidMeter(player, 'light'));
 	hudElements.push(new ItemCounter(player));
+	hudElements.push(new TimeAliveCounter(player));
 
 	this.update = function() {
 		hudElements.update();
@@ -180,6 +181,11 @@ function FluidMeter(player, type) {
 	}
 }
 
+/**
+ * The ItemCounter is the HUD Element which conveys information about
+ * the number of items that have been picked up during gameplay.
+ * @param {Object} player the player we're tracking
+ */
 function ItemCounter(player) {
 
 	var ITEM_HUD_X = 530;
@@ -287,3 +293,41 @@ function ItemCounter(player) {
 	}
 }
 
+function TimeAliveCounter(player) {
+	
+	var TIME_COUNTER_HUD_X = 20;
+	var TIME_COUNTER_HUD_Y = 60;
+	
+	this.decisecondsAlive = 0.0;
+	this.secondsAlive = 0.0;
+	this.minutesAlive = 0.0;
+	
+	this.desisecondsString = "";
+	this.secondsString = "";
+	this.minutesString = "";
+	
+	this.update = function() {		
+		this.desisecondsAlive = Math.floor((player.timeAlive/100) % 10);
+		this.secondsAlive = Math.floor((player.timeAlive/(1000)) % 60);
+		this.minutesAlive = Math.floor((player.timeAlive/(1000*60)) % 60);
+		
+		this.desisecondsString = "" + this.desisecondsAlive;
+		this.secondsString = "X".replace("X", (this.secondsAlive < 10 ? ("0"+this.secondsAlive) : (this.secondsAlive)));
+		this.minutesString = "X".replace("X", (this.minutesAlive < 10 ? ("0"+this.minutesAlive) : (this.minutesAlive)));
+	}
+	
+	this.draw = function() {
+		jaws.context.font = "24pt Denk One";
+		jaws.context.lineWidth = 20;
+		jaws.context.fillStyle = "#1C1C1C";
+		jaws.context.strokeStyle = "rgba(200,200,200,0.0)";
+		jaws.context.fillText("Time Alive:", TIME_COUNTER_HUD_X, TIME_COUNTER_HUD_Y);
+		
+		jaws.context.font = "32pt Geo";
+		jaws.context.lineWidth = 20;
+		jaws.context.fillStyle = "#990000";
+		jaws.context.strokeStyle = "rgba(200,200,200,0.0)";
+		jaws.context.fillText(this.minutesString+":"+this.secondsString+":"+this.desisecondsString, TIME_COUNTER_HUD_X+160, TIME_COUNTER_HUD_Y);			
+	}
+	
+}

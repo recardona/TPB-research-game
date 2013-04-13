@@ -216,6 +216,7 @@ function PlayState() {
     	playerInLanternLight);
     
     player.applyDamage();
+    player.timeAlive += jaws.game_loop.tick_duration;
     reset_event_flags();    
        
     // Final checks:

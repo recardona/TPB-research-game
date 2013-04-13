@@ -34,6 +34,7 @@ function Player(x, y) {
 	this.timeSpentInLight = 0.0;
 	this.medicineLife = 50.0;
 	this.diseasePenalty = 0.05;
+	this.timeAlive = 0.0;
 	this.numberOfWatersCollected = 0;
 	this.numberOfRationsCollected = 0;
 	this.numberOfBottlecapsCollected = 0;
