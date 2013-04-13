@@ -1,7 +1,6 @@
 function HUD(player,gametype) {
 
 	var hudElements = new jaws.SpriteList();
-	
 
 	hudElements.push(new FeedbackIndicator(player,gametype));
 	hudElements.push(new FluidMeter(player, 'medicine'));
@@ -29,7 +28,7 @@ function FeedbackIndicator(player,gametype) {
 
 	var FACE_HUD_X = 675;
 	var FACE_HUD_Y = 90;
-	var zombie_level_text = ["Very Healthy", "", "Ill","Somewhat Ill","Neither Ill nor Healthy","Somewhat Healthy", "Healthy", "", "Very Healthy"];
+	var zombie_level_text = ["Very Healthy", "", "Healthy","Somewhat Healthy","Neither Ill nor Healthy","Somewhat Ill", "Ill", "", "Very Ill"];
 
 	/* This will animate the image of the player in the top-right corner of the HUD. */
 	this.faceAnimation = new jaws.Animation({
@@ -128,11 +127,52 @@ function FeedbackIndicator(player,gametype) {
 		
 		else {
 			//these game modes are text feedback modes
-			jaws.context.font = "16pt Denk One";
+			jaws.context.font = "25pt Geo";
 			jaws.context.lineWidth = 20;
 			jaws.context.fillStyle = "#1C1C1C";
 			jaws.context.strokeStyle = "rgba(200,200,200,0.0)";
-			jaws.context.fillText(zombie_level_text[player.zombieLevel], FACE_HUD_X, FACE_HUD_Y);
+			
+			switch(player.zombieLevel)
+			{
+				case 0:
+					jaws.context.fillText("Very", FACE_HUD_X-50, FACE_HUD_Y);
+					jaws.context.fillText("Healthy", FACE_HUD_X-50, FACE_HUD_Y+25);
+			  		break;
+			
+				case 2:
+					jaws.context.fillText("Healthy", FACE_HUD_X-50, FACE_HUD_Y+5);
+			  		break;
+			  		
+		  		case 3:
+					jaws.context.fillText("A Bit", FACE_HUD_X-50, FACE_HUD_Y);
+					jaws.context.fillText("Healthy", FACE_HUD_X-50, FACE_HUD_Y+25);
+		  			break;
+		  		
+		  		case 4:
+					jaws.context.fillText("Neither", FACE_HUD_X-50, FACE_HUD_Y-20);
+					jaws.context.fillText("Ill nor", FACE_HUD_X-50, FACE_HUD_Y+5);
+					jaws.context.fillText("Healthy", FACE_HUD_X-50, FACE_HUD_Y+30);
+		  			break;
+		  		
+		  		case 5:
+		  			jaws.context.fillText("A Bit", FACE_HUD_X-50, FACE_HUD_Y);
+					jaws.context.fillText("Ill", FACE_HUD_X-50, FACE_HUD_Y+25);
+		  			break;
+		  		
+		  		case 6:
+					jaws.context.fillText("Ill", FACE_HUD_X-50, FACE_HUD_Y+5);	  		
+		  			break;
+		  		
+		  		case 8:
+		  			jaws.context.fillText("Very", FACE_HUD_X-50, FACE_HUD_Y);
+					jaws.context.fillText("Ill", FACE_HUD_X-50, FACE_HUD_Y+25);
+		  			break;
+
+			
+				default:
+					console.log("Error.")
+			  
+			}
 
 		}
 		
