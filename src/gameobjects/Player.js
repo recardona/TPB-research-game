@@ -46,7 +46,11 @@ function Player(x, y) {
 		
 		var discrete_medicine_level = convert_to_discrete_level(this.medicineLife);
 		var discrete_exposure_level = convert_to_discrete_level(this.lightExposure);
-		this.zombieLevel = (discrete_medicine_level - 2) * (discrete_exposure_level - 2) + 4;				
+		this.zombieLevel = (discrete_medicine_level - 2) * (discrete_exposure_level - 2) + 4;
+		
+		//DEBUG:
+		// console.log("Light + Medicine = Zombie");
+		// console.log(discrete_exposure_level + "+" + discrete_medicine_level + "=" + this.zombieLevel);				
 	}
 
 	this.draw = function() {
