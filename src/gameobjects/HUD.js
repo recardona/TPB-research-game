@@ -33,7 +33,6 @@ function FeedbackIndicator(player, gametype) {
 
 	var FACE_HUD_X = 675;
 	var FACE_HUD_Y = 90;
-	var zombie_level_text = ["Very Healthy", "", "Healthy", "Somewhat Healthy", "Neither Ill nor Healthy", "Somewhat Ill", "Ill", "", "Very Ill"];
 
 	/* This will animate the image of the player in the top-right corner of the HUD. */
 	this.faceAnimation = new jaws.Animation({
@@ -66,59 +65,22 @@ function FeedbackIndicator(player, gametype) {
 	this.hudBorder.setImage(this.borderAnimation.frames[0]);
 
 	this.update = function() {
-		//check the player's life, and change the player's HUD face accordingly
+		// check the player's life, and change the player's HUD face accordingly
 		var old_anim_index = this.faceAnimationIndex;
-
-		if (player.zombieLevel == 0) {
-			if (this.faceAnimationIndex != 0) {
-				this.playerFace.setImage(this.faceAnimation.frames[0]);
-				this.faceAnimationIndex = 0;
-			}
-		} else if (player.zombieLevel == 2) {
-			if (this.faceAnimationIndex != 2) {
-				// 04-11-13: we skip from frames[0] to frames[2] because we now need 7 faces
-				this.playerFace.setImage(this.faceAnimation.frames[2]);
-				this.faceAnimationIndex = 2;
-
-			}
-		} else if (player.zombieLevel == 3) {
-			if (this.faceAnimationIndex != 3) {
-				this.playerFace.setImage(this.faceAnimation.frames[3]);
-				this.faceAnimationIndex = 3;
-			}
-		} else if (player.zombieLevel == 4) {
-			if (this.faceAnimationIndex != 4) {
-				this.playerFace.setImage(this.faceAnimation.frames[4]);
-				this.faceAnimationIndex = 4;
-			}
-		} else if (player.zombieLevel == 5) {
-			if (this.faceAnimationIndex != 5) {
-				this.playerFace.setImage(this.faceAnimation.frames[5]);
-				this.faceAnimationIndex = 5;
-			}
-		} else if (player.zombieLevel == 6) {
-			if (this.faceAnimationIndex != 6) {
-				this.playerFace.setImage(this.faceAnimation.frames[6]);
-				this.faceAnimationIndex = 6;
-			}
-		} else {//player.zombieLevel == 8
-			//it's 8 because of the formula calculation, in Player.js: line 48
-			if (this.faceAnimationIndex != 7) {
-				this.playerFace.setImage(this.faceAnimation.frames[7]);
-				this.faceAnimationIndex = 7;
-			}
+		
+		if(this.faceAnimationIndex != player.zombieLevel) {
+			this.playerFace.setImage(this.faceAnimation.frames[player.zombieLevel]);
+			this.faceAnimationIndex = player.zombieLevel;
 		}
 
-		//if there is a face change, highlight the HUD box to make it
-		//obvious to the player
+		// if there is a face change, highlight the HUD box to 
+		// make it obvious to the player
 		if (old_anim_index != this.faceAnimationIndex) {
 			this.hudBorder.setImage(this.borderAnimation.frames[1]);
 			var hudB = this.hudBorder;
 			//keep references for anon. function
 			var bAnim = this.borderAnimation;
-			setTimeout(function() {
-				hudB.setImage(bAnim.frames[0]);
-			}, 500);
+			setTimeout(function() { hudB.setImage(bAnim.frames[0]);}, 500);
 		}
 
 	}
@@ -171,7 +133,7 @@ function FeedbackIndicator(player, gametype) {
 					break;
 
 				default:
-					console.log("Error.")
+					console.log("Error.");
 
 			}
 

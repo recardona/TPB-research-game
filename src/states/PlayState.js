@@ -197,7 +197,6 @@ function PlayState() {
     	}
     });
     
-    
     playerCollidedWithMedpac    = check_collided_and_remove(player,medpacs);
     playerCollidedWithBottlecap = check_collided_and_remove(player,bottlecaps);
     playerCollidedWithRations   = check_collided_and_remove(player,rations);
