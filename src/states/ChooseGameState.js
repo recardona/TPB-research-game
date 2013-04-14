@@ -24,10 +24,10 @@ function ChooseGameState() {
 		});
 		
 		jaws.on_keydown(["enter", "space"], function() {
-			if (items[index] == "Immediate Embodied Feedback") {jaws.switchGameState(PlayState, {fps : 41},1);}
-			if (items[index] == "Immediate Text Feedback") {jaws.switchGameState(PlayState, {fps : 41},2);}
-			if (items[index] == "Delayed Embodied Feedback") {jaws.switchGameState(PlayState, {fps : 41},3);}
-			if (items[index] == "Delayed Text Feedback") {jaws.switchGameState(PlayState, {fps : 41},4);}
+			if (items[index] == "Immediate Embodied Feedback") {jaws.switchGameState(PlayState, {fps : 60},1);}
+			if (items[index] == "Immediate Text Feedback") {jaws.switchGameState(PlayState, {fps : 60},2);}
+			if (items[index] == "Delayed Embodied Feedback") {jaws.switchGameState(PlayState, {fps : 60},3);}
+			if (items[index] == "Delayed Text Feedback") {jaws.switchGameState(PlayState, {fps : 60},4);}
 		});
 		
 		title_anim = new jaws.Animation({

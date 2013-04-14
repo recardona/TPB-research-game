@@ -20,12 +20,8 @@ function PlayState() {
   var rations     = new jaws.SpriteList();
   var waters      = new jaws.SpriteList();
   
- 
   var MAX_NUMBER_OF_ITEMS = 16;
   var acceptable_item_positions = setup_acceptable_item_positions();
-  
-
-  
   var sqrt_sixteen_halves = 4*Math.SQRT1_2;
   
   var width  = 72;
@@ -47,10 +43,9 @@ function PlayState() {
   var playerCollidedWithLantern   = false;
   var playerInLanternLight = false;
   var playerLost  = false;
- 
   
   this.setup = function(gametype) {
-  	
+  	 	
   	/* Map setup. */
   	grass_blocks = setup_background_tiles();
 	roads      = setup_road_tiles();
@@ -79,13 +74,14 @@ function PlayState() {
        
 	//jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
     jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
+    
   }
 
 
   this.update = function() {
   	lanterns.update();
-  	player_hud.update();    
   	player.update();
+  	player_hud.update();	
   	
   	// Game over!
   	if(player.zombieLevel == 8) {
@@ -224,8 +220,8 @@ function PlayState() {
     force_inside_canvas(player.sprite);
     fps.innerHTML = jaws.game_loop.fps
     
-	//Logging:
-    jaws.log("Player at x:"+player.sprite.x+", y:"+player.sprite.y);
+	//DEBUG:
+    // jaws.log("Player at x:"+player.sprite.x+", y:"+player.sprite.y);
     
   }
 

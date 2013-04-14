@@ -5,16 +5,39 @@
  */
 function HUD(player, gametype) {
 
-	var hudElements = new jaws.SpriteList();
+	var medicineHUD = new FluidMeter(player, 'medicine');
+	var lightHUD = new FluidMeter(player, 'light');
+	var itemHUD = new ItemCounter(player);
+	var timeHUD = new TimeAliveCounter(player);
 
-	hudElements.push(new FeedbackIndicator(player, gametype));
-	hudElements.push(new FluidMeter(player, 'medicine'));
-	hudElements.push(new FluidMeter(player, 'light'));
-	hudElements.push(new ItemCounter(player));
-	hudElements.push(new TimeAliveCounter(player));
+	var feedbackHUD = new FeedbackIndicator(player, gametype);
+	var delayedFeedbackConditionCounter = 0;
+	var delayedFeedbackConditionDelay = 10 * 1000; //ms (5 s)
+
+	var hudElements = new jaws.SpriteList();
+	hudElements.push(medicineHUD);
+	hudElements.push(lightHUD);
+	hudElements.push(itemHUD);
+	hudElements.push(timeHUD);
+	hudElements.push(feedbackHUD);
 
 	this.update = function() {
-		hudElements.update();
+		medicineHUD.update();
+		lightHUD.update();
+		itemHUD.update();
+		timeHUD.update();
+
+		if (gametype == 3 || gametype == 4) {
+			// this gametype is for delayed feedback
+			if (delayedFeedbackConditionCounter >= delayedFeedbackConditionDelay) {
+				delayedFeedbackConditionCounter = 0;
+				feedbackHUD.update();
+			}
+		} else {
+			feedbackHUD.update();
+		}
+
+		delayedFeedbackConditionCounter += jaws.game_loop.tick_duration;
 	}
 
 	this.draw = function() {
@@ -48,7 +71,7 @@ function FeedbackIndicator(player, gametype) {
 		anchor : "center",
 		scale : 0.55
 	});
-	this.playerFace.setImage(this.faceAnimation.next());
+	this.playerFace.setImage(this.faceAnimation.frames[player.zombieLevel]);
 
 	/* This will animate the golden glow around the player picture.*/
 	this.borderAnimation = new jaws.Animation({
@@ -67,25 +90,27 @@ function FeedbackIndicator(player, gametype) {
 	this.update = function() {
 		// check the player's life, and change the player's HUD face accordingly
 		var old_anim_index = this.faceAnimationIndex;
-		
-		if(this.faceAnimationIndex != player.zombieLevel) {
+
+		if (this.faceAnimationIndex != player.zombieLevel) {
 			// the only case for which the zombie level does *not* match to the
-			// art asset that displays it, is zombie level = 8 
+			// art asset that displays it, is zombie level = 8
 			// (to which index 7 corresponds)
-			
 			var animationIndex = (player.zombieLevel == 8) ? 7 : player.zombieLevel;
+
 			this.playerFace.setImage(this.faceAnimation.frames[animationIndex]);
 			this.faceAnimationIndex = player.zombieLevel;
 		}
 
-		// if there is a face change, highlight the HUD box to 
+		// if there is a face change, highlight the HUD box to
 		// make it obvious to the player
 		if (old_anim_index != this.faceAnimationIndex) {
 			this.hudBorder.setImage(this.borderAnimation.frames[1]);
 			var hudB = this.hudBorder;
 			//keep references for anon. function
 			var bAnim = this.borderAnimation;
-			setTimeout(function() { hudB.setImage(bAnim.frames[0]);}, 500);
+			setTimeout(function() {
+				hudB.setImage(bAnim.frames[0]);
+			}, 500);
 		}
 
 	}
