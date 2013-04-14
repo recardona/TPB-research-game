@@ -12,7 +12,7 @@ function HUD(player, gametype) {
 
 	var feedbackHUD = new FeedbackIndicator(player, gametype);
 	var delayedFeedbackConditionCounter = 0;
-	var delayedFeedbackConditionDelay = 10 * 1000; //ms (5 s)
+	var delayedFeedbackConditionDelay = 7 * 1000; //ms (7 s)
 
 	var hudElements = new jaws.SpriteList();
 	hudElements.push(medicineHUD);
