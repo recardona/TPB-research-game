@@ -64,16 +64,15 @@ function PlayState() {
   	tile_map.push(grass_blocks);
   	
   	/* Player setup. */
-  	player = new Player(500,1000);
+  	player = new Player(1152,864);
   	
     /* Player HUD setup. */
     player_hud = new HUD(player,gametype);
     
     /* Prepare random item generation */
-    generate_random_item(5); //every 5 seconds
+    generate_random_item(3); //every 5 seconds
        
-	//jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) })
-    jaws.preventDefaultKeys(["up", "down", "left", "right", "space"])
+    jaws.preventDefaultKeys(["up", "down", "left", "right", "space"]);
     
   }
 

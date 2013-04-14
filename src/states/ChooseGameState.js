@@ -30,9 +30,11 @@ function ChooseGameState() {
 			if (items[index] == "Delayed Text Feedback") {jaws.switchGameState(PlayState, {fps : 60},4);}
 		});
 		
+		jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) });
+		
 		title_anim = new jaws.Animation({
 			sprite_sheet : "./assets/art/title_animation.png",
-			frame_size : [874, 579],
+			frame_size : [787, 576],
 			loop : true
 		});
 		title_img = new jaws.Sprite({

@@ -22,6 +22,8 @@ function GameOverState() {
 				index = 0
 			}
 		});
+		
+		jaws.on_keydown("esc",  function() { jaws.switchGameState(MenuState) });
 		jaws.on_keydown(["enter", "space"], function() {
 			if (items[index] == "Try Again") {
 				jaws.switchGameState(ChooseGameState);
@@ -32,8 +34,8 @@ function GameOverState() {
 			}
 		});
 		title_anim = new jaws.Animation({
-			sprite_sheet : "./assets/art/title_animation.png",
-			frame_size : [874, 579],
+			sprite_sheet : "./assets/art/gameover_animation.png",
+			frame_size : [787, 576],
 			loop : true
 		});
 		title_img = new jaws.Sprite({
@@ -68,7 +70,7 @@ function GameOverState() {
 			jaws.context.lineWidth = 20;
 			jaws.context.fillStyle = (i == index) ? "#E5F361" : "#62625F";
 			jaws.context.strokeStyle = "rgba(200,200,200,0.0)";
-			jaws.context.fillText(items[i], jaws.width / 2.5, jaws.height / 1.8 + i * (75));
+			jaws.context.fillText(items[i], jaws.width / 2.5, jaws.height / 1.2 + i * (75));
 		}
 	}
 }

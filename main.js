@@ -2,6 +2,7 @@ function init() {
 
 	/* Importing Title assets */
 	jaws.assets.add("./assets/art/title_animation.png");
+	jaws.assets.add("./assets/art/gameover_animation.png");
 
 	/* Importing Player assets */
 	jaws.assets.add("./assets/art/player_LR_spritesheet_zombies.png");
