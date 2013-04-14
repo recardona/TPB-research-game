@@ -89,7 +89,8 @@ function PlayState() {
   	
   	// Game over!
   	if(player.zombieLevel == 8) {
-  		jaws.switchGameState(GameOverState);
+  		// provide a 1 second feedback on zombie level
+  		setTimeout(function() { jaws.switchGameState(GameOverState);}, 750);
   	}
   	
     

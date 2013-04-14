@@ -69,7 +69,12 @@ function FeedbackIndicator(player, gametype) {
 		var old_anim_index = this.faceAnimationIndex;
 		
 		if(this.faceAnimationIndex != player.zombieLevel) {
-			this.playerFace.setImage(this.faceAnimation.frames[player.zombieLevel]);
+			// the only case for which the zombie level does *not* match to the
+			// art asset that displays it, is zombie level = 8 
+			// (to which index 7 corresponds)
+			
+			var animationIndex = (player.zombieLevel == 8) ? 7 : player.zombieLevel;
+			this.playerFace.setImage(this.faceAnimation.frames[animationIndex]);
 			this.faceAnimationIndex = player.zombieLevel;
 		}
 
