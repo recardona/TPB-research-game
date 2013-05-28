@@ -122,6 +122,9 @@ function FeedbackIndicator(player, gametype) {
 			this.playerFace.draw();
 		} else {
 			//these game modes are text feedback modes
+			jaws.context.fillStyle = "#FFFFFF";
+			jaws.context.fillRect(FACE_HUD_X-62, FACE_HUD_Y-62, 124, 124);
+			
 			jaws.context.font = "25pt Geo";
 			jaws.context.lineWidth = 20;
 			jaws.context.fillStyle = "#1C1C1C";

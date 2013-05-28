@@ -14,18 +14,21 @@ function MenuState() {
 
 	this.setup = function() {
 		index = 0;
+		
 		jaws.on_keydown(["down", "s"], function() {
 			index++;
 			if (index >= items.length) {
 				index = items.length - 1
 			}
 		});
+		
 		jaws.on_keydown(["up", "w"], function() {
 			index--;
 			if (index < 0) {
 				index = 0
 			}
 		});
+		
 		jaws.on_keydown(["enter", "space"], function() {
 			// the last argument in jaws.switchGameState(...)
 			// gets passed in as a parameter to the State
@@ -38,11 +41,13 @@ function MenuState() {
 			frame_size : [787, 576],
 			loop : true
 		});
+		
 		title_img = new jaws.Sprite({
 			x : jaws.width / 2,
 			y : jaws.height / 2,
 			anchor : "center"
 		});
+		
 		title_img.setImage(title_anim.next());
 	}
 
