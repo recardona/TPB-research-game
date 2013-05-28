@@ -241,7 +241,7 @@ function FluidMeter(player, type) {
  */
 function ItemCounter(player) {
 
-	var ITEM_HUD_X = 530;
+	var ITEM_HUD_X = 510;
 	var ITEM_HUD_Y = 90;
 	var BOTTLECAP_COUNTER_INDEX = 0;
 	var RATIONS_COUNTER_INDEX = 1;
